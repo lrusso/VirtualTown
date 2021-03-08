@@ -10,10 +10,10 @@ https://lrusso.github.io/VirtualTown/VirtualTown.htm
 * Colliding with the houses.
 * Colliding with the water.
 * Adding virtual controls.
-* Moving up and down while walking.
+* Moving camera up and down while walking.
 * Improving lights.
 * Improving house textures.
-* Improving the island ground.
+* Improving the shape of the island ground.
 * Adding fountain.
 * Adding trees.
 * Adding a dock.
