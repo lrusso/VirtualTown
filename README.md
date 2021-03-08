@@ -1,4 +1,4 @@
-# VirtualTown
+# Virtual Town
 
 ## Web:
 
