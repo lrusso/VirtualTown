@@ -13,6 +13,7 @@ https://lrusso.github.io/VirtualTown/VirtualTown.htm
 * Moving up and down while walking.
 * Improve lights.
 * Improve house textures.
+* Improve the island ground.
 * Adding fountain.
 * Adding trees.
 * Adding a dock.
