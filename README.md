@@ -18,7 +18,7 @@ https://lrusso.github.io/VirtualTown/VirtualTown.htm
 * Adding trees.
 * Adding a dock.
 * Adding the sun.
-* Modifying the light acording the system time.
+* Modifying the light acording to the system time.
 * Opening and closing doors with an action key/button.
 * Adding open door sound.
 * Adding walking sound (over grass or wood).
