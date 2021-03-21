@@ -414,7 +414,7 @@
 					// MOVING THE HERO FORWARD
 					hero.position.z = hero.position.z - 1.5;
 
-					// CHECKING IF THE HERO CAN PASS
+					// CHECKING IF THE HERO CAN MOVE
 					if (detectCollisions()==false)
 						{
 						// MOVING THE CAMERA FORWARD
@@ -427,16 +427,21 @@
 						}
 					}
 
+				// CHECKING IF THE DOWN KEY IS PRESSED
 				if (keyDownPressed==true)
 					{
+					// MOVING THE HERO BACKWARDS
 					hero.position.z = hero.position.z + 1.5;
 
+					// CHECKING IF THE HERO CAN MOVE
 					if (detectCollisions()==false)
 						{
+						// MOVING THE CAMERA BACKWARDS
 						camera.position.z = camera.position.z + 1.5;
 						}
 						else
 						{
+						// MOVING THE HERO FORWARD
 						hero.position.z = hero.position.z - 1.5;
 						}
 					}
@@ -469,6 +474,7 @@
 						}
 					}
 
+				// RENDERING THE SCENE
 				renderer.render(scene, camera);
 				}
 
@@ -513,7 +519,7 @@
 					}
 				}
 
-			// LOADING THE GAME RESOURCES
+			// CREATING THE SCENE
 			create();
 
 			window.oncontextmenu = function()
@@ -590,7 +596,7 @@
 				// SHOWING THE ABOUT BOX
 				document.getElementById("about").style.display = "block";
 
-				// RENDERING THE GAME
+				// UPDATING THE SCENE
 				update();
 
 				// RESIZING THE CANVAS TO FIT THE WINDOW
