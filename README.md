@@ -8,6 +8,10 @@ Virtual Town developed in JavaScript.
 
 https://lrusso.github.io/VirtualTown/VirtualTown.htm
 
+## Virtual joystick code
+
+https://github.com/lrusso/VirtualJoystick
+
 ## Roadmap:
 
 * Adding virtual controls.
