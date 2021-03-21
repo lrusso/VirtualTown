@@ -130,7 +130,7 @@
 
 				// ADDING THE CAMERA
 				camera = new THREE.PerspectiveCamera(45, containerWidth / containerHeight, 1, 3000);
-				camera.position.set(0, 11, 0);
+				camera.position.set(-2, 11, 0);
 				scene.add(camera);
 
 				// ADDING THE HERO
@@ -370,7 +370,7 @@
 
 				// ADDING THE BIG HOUSE
 				house_big_1_walls = new THREE.Mesh(house_big_walls_geometry, house_big_walls_material);
-				house_big_1_walls.position.x = 0;
+				house_big_1_walls.position.x = 4;
 				house_big_1_walls.position.y = 11;
 				house_big_1_walls.position.z = -200;
 				house_big_1_walls.rotation.x = (90 * Math.PI)/180;
@@ -380,7 +380,7 @@
 				scene.add(house_big_1_walls);
 				obstacles.push(house_big_1_walls);
 				house_big_1_roof = new THREE.Mesh(house_big_roof_geometry, house_big_roof_material);
-				house_big_1_roof.position.x = 0;
+				house_big_1_roof.position.x = 4;
 				house_big_1_roof.position.y = 28;
 				house_big_1_roof.position.z = -196;
 				house_big_1_roof.rotation.x = (90 * Math.PI)/180;
@@ -389,7 +389,7 @@
 				house_big_1_roof.scale.set(0.7,0.7,0.7);
 				scene.add(house_big_1_roof);
 				house_big_1_door = new THREE.Mesh(house_door_geometry, house_door_material);
-				house_big_1_door.position.x = -6;
+				house_big_1_door.position.x = -2;
 				house_big_1_door.position.y = 10;
 				house_big_1_door.position.z = -165;
 				house_big_1_door.rotation.z = (180 * Math.PI)/180;
