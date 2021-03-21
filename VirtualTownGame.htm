@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Virtual Town</title>
+		<style>
+			*{outline:none;font-family:Arial;cursor:default}
+			html,body{min-height:100%;margin:0;padding:0;background-color:black;-webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:none}
+
+			.virtual-town-container{position:fixed;left:0;top:0;right:0;bottom:0;width:100%;height:100%;display:none}
+			.virtual-town-canvas{position:fixed;left:0;top:0;right:0;bottom:0}
+			.virtual-town-about-label{position:fixed;left:50%;transform:translateX(-50%);white-space:nowrap;bottom:0;z-index:399;margin-bottom:20px;padding:10px;border-radius:10px;text-shadow: 0 0 3px #000000,0 0 7px #000000;font-size:25px;font-weight:bold;color:white;background-color:rgba(0,0,0,0.5);display:none}
+			.virtual-town-about-hidden{animation:fadeOut 1.5s;animation-fill-mode:forwards}
+
+			@keyframes fadeOut{0%{opacity:1}99%{opacity:0.01}100%{opacity:0}}
+			@keyframes fadeIn{0%{opacity:0}100%{opacity:1}}
+
+			/* iPods and other very small devices (portrait and landscape)(very small) */
+			@media screen and (min-width: 0) and (max-width: 320px)
+				{
+				.virtual-town-about-label{font-size:18px;margin-bottom:10px}
+				}
+
+			.virtual-town-pleasewait{position:fixed;width:64px;height:64px;left:0;right:0;top:0;bottom:0;margin:auto auto;border:0}
+			.virtual-town-pleasewait-spinner{color:white;display:inline-block;position:relative;width:64px;height:64px}
+			.virtual-town-pleasewait-spinner div{transform-origin:32px 32px;animation:virtual-town-pleasewait-spinner 1.2s linear infinite}
+			.virtual-town-pleasewait-spinner div:after{content:" ";display:block;position:fixed;top:3px;left:29px;width:5px;height:14px;border-radius:20%;background:white}
+			.virtual-town-pleasewait-spinner div:nth-child(1){transform:rotate(0deg);animation-delay:-1.1s}
+			.virtual-town-pleasewait-spinner div:nth-child(2){transform:rotate(30deg);animation-delay:-1s}
+			.virtual-town-pleasewait-spinner div:nth-child(3){transform:rotate(60deg);animation-delay:-0.9s}
+			.virtual-town-pleasewait-spinner div:nth-child(4){transform:rotate(90deg);animation-delay:-0.8s}
+			.virtual-town-pleasewait-spinner div:nth-child(5){transform:rotate(120deg);animation-delay:-0.7s}
+			.virtual-town-pleasewait-spinner div:nth-child(6){transform:rotate(150deg);animation-delay:-0.6s}
+			.virtual-town-pleasewait-spinner div:nth-child(7){transform:rotate(180deg);animation-delay:-0.5s}
+			.virtual-town-pleasewait-spinner div:nth-child(8){transform:rotate(210deg);animation-delay:-0.4s}
+			.virtual-town-pleasewait-spinner div:nth-child(9){transform:rotate(240deg);animation-delay:-0.3s}
+			.virtual-town-pleasewait-spinner div:nth-child(10){transform:rotate(270deg);animation-delay:-0.2s}
+			.virtual-town-pleasewait-spinner div:nth-child(11){transform:rotate(300deg);animation-delay:-0.1s}
+			.virtual-town-pleasewait-spinner div:nth-child(12){transform:rotate(330deg);animation-delay:0s}
+			@keyframes virtual-town-pleasewait-spinner{0%{opacity:1}100%{opacity:0}}
+		</style>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
+	</head>
+	<body>
+		<div class="virtual-town-container"></div>
+		<div class="virtual-town-about-label" id="about"></div>
+		<div class="virtual-town-pleasewait"><div class="virtual-town-pleasewait-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
+		<script src="VirtualTownGame.js"></script>
+		<script>
+			var containerWidth;
+			var containerHeight;
+			var scene;
+			var camera;
+			var renderer;
+			var hemisphereLight;
+			var directionalLight;
+
+			var hero;
+			var heroSpeed = 1.3;
+			var heroDistanceCheck = 10;
+
+			var grassFloor;
+			var grassMaterial;
+			var grassGeometry;
+			var grassTexture;
+			var grassLoader;
+
+			var oceanFloor;
+			var oceanMaterial;
+			var oceanGeometry;
+			var oceanTexture;
+			var oceanLoader;
+
+			var obstacles = [];
+
+			var keyUpPressed = false;
+			var keyDownPressed = false;
+			var keyLeftPressed = false;
+			var keyRightPressed = false;
+
+			var userLanguage = window.navigator.userLanguage || window.navigator.language;
+
+			var STRING_ABOUT = "";
+
+			// CHECKING THE USER LANGUAGE
+			if (userLanguage.substring(0,2)=="es")
+				{
+				STRING_ABOUT = "Dise&ntilde;ado por www.lrusso.com";
+				}
+				else
+				{
+				STRING_ABOUT = "Designed by www.lrusso.com";
+				}
+
+			function create()
+				{
+				// GETTING THE CONTAINER SIZE
+				containerWidth = document.getElementsByClassName("virtual-town-container")[0].offsetWidth;
+				containerHeight = document.getElementsByClassName("virtual-town-container")[0].offsetHeight;
+
+				// SETTING THE RENDER CONFIGURATION
+				renderer = new THREE.WebGLRenderer({alpha:true});
+				renderer.domElement.className = "virtual-town-canvas";
+				renderer.setSize(window.innerWidth, window.innerHeight);
+				renderer.antialias = false;
+				renderer.setClearColor(0xFFFFFF, 0);
+				renderer.shadowMap.enabled = true;
+				renderer.shadowMapSoft = true;
+				renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+				// ADDING THE CANVAS INTO THE CONTAINER
+				document.getElementsByClassName("virtual-town-container")[0].appendChild(renderer.domElement);
+
+				// CREATING THE SCENE
+				scene = new THREE.Scene();
+
+				// ADDING THE CAMERA
+				camera = new THREE.PerspectiveCamera(45, containerWidth / containerHeight, 1, 3000);
+				camera.position.set(-2, 11, 0);
+				scene.add(camera);
+
+				// ADDING THE HERO
+				hero = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({color:0x000000}));
+				hero.position.y = 10;
+				hero.visible = false;
+				scene.add(hero);
+
+				// ADDING THE GRASS FLOOR
+				grassLoader = new THREE.TextureLoader();
+				grassTexture = grassLoader.load(grassImageData, function (texture)
+					{
+					grassTexture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+					grassTexture.offset.set(0,0);
+					grassTexture.repeat.set(10,10);
+					});
+				grassMaterial = new THREE.MeshPhongMaterial({map:grassTexture});
+				grassGeometry = new THREE.BoxGeometry(200, 400, 1);
+				grassFloor = new THREE.Mesh(grassGeometry, grassMaterial);
+				grassFloor.receiveShadow = true;
+				grassFloor.rotation.x = 1.570;
+				grassFloor.position.x = 0;
+				grassFloor.position.y = 1;
+				grassFloor.position.z = -90;
+				scene.add(grassFloor);
+
+				// ADDING THE OCEAN
+				oceanLoader = new THREE.TextureLoader();
+				oceanTexture = oceanLoader.load(oceanImageData, function (texture)
+					{
+					oceanTexture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+					oceanTexture.offset.set(0,0);
+					oceanTexture.repeat.set(10,10);
+					});
+				oceanMaterial = new THREE.MeshPhongMaterial( { map: oceanTexture } );
+				oceanGeometry = new THREE.BoxGeometry(10000, 10000);
+				oceanFloor = new THREE.Mesh(oceanGeometry, oceanMaterial);
+				oceanFloor.receiveShadow = true;
+				oceanFloor.rotation.x = 1.570;
+				oceanFloor.position.x = 0;
+				oceanFloor.position.y = -1;
+				oceanFloor.position.z = -90;
+				scene.add(oceanFloor);
+
+				// ADDING THE LIGHTS
+				var spotLight;
+				var target;
+				var targetGeometry;
+				var targetMaterial;
+				for (var i = 0; i < 5; i += 1)
+					{
+					targetGeometry = new THREE.BoxGeometry(1, 1, 1);
+					targetMaterial = new THREE.MeshNormalMaterial();
+					target = new THREE.Mesh(targetGeometry, targetMaterial);
+					target.position.set(0, 2, i * 1000 / 5 - 1000 / 2.50);
+					target.visible = false;
+					scene.add(target);
+
+					spotLight = new THREE.SpotLight(0xFFFFFF, 0.1);
+					spotLight.position.set(150, i * 1000 / 5 - 1000 / 2.5, -350);
+					spotLight.castShadow = true;
+					spotLight.target = target;
+					spotLight.shadow.mapSize.width = 1024;
+					spotLight.shadow.mapSize.height = 1024;
+					}
+				directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+				directionalLight.position.set(0, 99, 0);
+				hemisphereLight = new THREE.HemisphereLight(0xFFB74D, 0x37474F, 1);
+				hemisphereLight.position.y = 500;
+				scene.add(directionalLight,hemisphereLight);
+
+				// ADDING THE SKY
+				var canvas = document.createElement("canvas");
+				canvas.width = 32;
+				canvas.height = window.innerHeight;
+				var gradient = canvas.getContext("2d").createLinearGradient(0,0,0,canvas.height);
+				gradient.addColorStop(0,"#1e4877");
+				gradient.addColorStop(0.5,"#4584b4");
+				canvas.getContext("2d").fillStyle = gradient;
+				canvas.getContext("2d").fillRect(0, 0, canvas.width, canvas.height);
+				document.getElementsByClassName("virtual-town-container")[0].style.background = "url(" + canvas.toDataURL("image/png") + ")";
+				document.getElementsByClassName("virtual-town-container")[0].style.backgroundSize = "32px 100%";
+
+				// LOADING HOUSE SMALL WALLS MODEL
+				house_small_walls_material = new THREE.MeshLambertMaterial({ color: 0xCECECE, flatShading: THREE.FlatShading, opacity: 0.7 });
+				house_small_walls_geometry = new THREE.STLLoader().parse(house_small_walls);
+				house_small_walls_geometry.computeFaceNormals();
+				house_small_walls_geometry.computeVertexNormals();
+				house_small_walls_geometry.center();
+
+				// LOADING HOUSE SMALL ROOF MODEL
+				house_small_roof_material = new THREE.MeshLambertMaterial({ color: 0x8b0000, flatShading: THREE.FlatShading, opacity: 0.7 });
+				house_small_roof_geometry = new THREE.STLLoader().parse(house_small_roof);
+				house_small_roof_geometry.computeFaceNormals();
+				house_small_roof_geometry.computeVertexNormals();
+				house_small_roof_geometry.center();
+
+				// LOADING HOUSE BIG WALLS MODEL
+				house_big_walls_material = new THREE.MeshLambertMaterial({ color: 0xCECECE, flatShading: THREE.FlatShading, opacity: 0.7 });
+				house_big_walls_geometry = new THREE.STLLoader().parse(house_big_walls);
+				house_big_walls_geometry.computeFaceNormals();
+				house_big_walls_geometry.computeVertexNormals();
+				house_big_walls_geometry.center();
+
+				// LOADING HOUSE BIG ROOF MODEL
+				house_big_roof_material = new THREE.MeshLambertMaterial({ color: 0x8b0000, flatShading: THREE.FlatShading, opacity: 0.7 });
+				house_big_roof_geometry = new THREE.STLLoader().parse(house_big_roof);
+				house_big_roof_geometry.computeFaceNormals();
+				house_big_roof_geometry.computeVertexNormals();
+				house_big_roof_geometry.center();
+
+				// LOADING HOUSE DOOR MODEL
+				house_door_material = new THREE.MeshLambertMaterial({ color: 0x964B00, flatShading: THREE.FlatShading, opacity: 0.7 });
+				house_door_geometry = new THREE.STLLoader().parse(house_door);
+				house_door_geometry.computeFaceNormals();
+				house_door_geometry.computeVertexNormals();
+				house_door_geometry.center();
+
+				// LOADING HOUSE WINDOW MODEL
+				house_window_material = new THREE.MeshLambertMaterial({ color: 0x8b0000, flatShading: THREE.FlatShading, opacity: 0.7 });
+				house_window_geometry = new THREE.STLLoader().parse(house_window);
+				house_window_geometry.computeFaceNormals();
+				house_window_geometry.computeVertexNormals();
+				house_window_geometry.center();
+
+				// ADDING THE FIRST HOUSE
+				house_small_1_walls = new THREE.Mesh(house_small_walls_geometry, house_small_walls_material);
+				house_small_1_walls.position.x = 50;
+				house_small_1_walls.position.y = 11;
+				house_small_1_walls.position.z = -70;
+				house_small_1_walls.rotation.x = (90 * Math.PI)/180;
+				house_small_1_walls.rotation.y = (180 * Math.PI)/180;
+				house_small_1_walls.rotation.z = (90 * Math.PI)/180;
+				house_small_1_walls.scale.set(0.7,0.7,0.7);
+				scene.add(house_small_1_walls);
+				obstacles.push(house_small_1_walls);
+				house_small_1_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
+				house_small_1_roof.position.x = 50;
+				house_small_1_roof.position.y = 26;
+				house_small_1_roof.position.z = -70;
+				house_small_1_roof.rotation.x = (90 * Math.PI)/180;
+				house_small_1_roof.rotation.y = (180 * Math.PI)/180;
+				house_small_1_roof.rotation.z = (90 * Math.PI)/180;
+				house_small_1_roof.scale.set(0.7,0.7,0.7);
+				scene.add(house_small_1_roof);
+				house_small_1_door = new THREE.Mesh(house_door_geometry, house_door_material);
+				house_small_1_door.position.x = 32;
+				house_small_1_door.position.y = 10;
+				house_small_1_door.position.z = -55;
+				house_small_1_door.rotation.y = (270 * Math.PI)/180;
+				house_small_1_door.scale.set(0.7,0.7,0.7);
+				scene.add(house_small_1_door);
+
+				// ADDING THE SECOND HOUSE
+				house_small_2_walls = new THREE.Mesh(house_small_walls_geometry, house_small_walls_material);
+				house_small_2_walls.position.x = 50;
+				house_small_2_walls.position.y = 11;
+				house_small_2_walls.position.z = 40;
+				house_small_2_walls.rotation.x = (90 * Math.PI)/180;
+				house_small_2_walls.rotation.y = (180 * Math.PI)/180;
+				house_small_2_walls.rotation.z = (90 * Math.PI)/180;
+				house_small_2_walls.scale.set(0.7,0.7,0.7);
+				scene.add(house_small_2_walls);
+				obstacles.push(house_small_2_walls);
+				house_small_2_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
+				house_small_2_roof.position.x = 50;
+				house_small_2_roof.position.y = 26;
+				house_small_2_roof.position.z = 40;
+				house_small_2_roof.rotation.x = (90 * Math.PI)/180;
+				house_small_2_roof.rotation.y = (180 * Math.PI)/180;
+				house_small_2_roof.rotation.z = (90 * Math.PI)/180;
+				house_small_2_roof.scale.set(0.7,0.7,0.7);
+				scene.add(house_small_2_roof);
+				house_small_2_door = new THREE.Mesh(house_door_geometry, house_door_material);
+				house_small_2_door.position.x = 32;
+				house_small_2_door.position.y = 10;
+				house_small_2_door.position.z = 55;
+				house_small_2_door.rotation.y = (270 * Math.PI)/180;
+				house_small_2_door.scale.set(0.7,0.7,0.7);
+				scene.add(house_small_2_door);
+
+				// ADDING THE TIRTH HOUSE
+				house_small_3_walls = new THREE.Mesh(house_small_walls_geometry, house_small_walls_material);
+				house_small_3_walls.position.x = -50;
+				house_small_3_walls.position.y = 11;
+				house_small_3_walls.position.z = -70;
+				house_small_3_walls.rotation.x = (90 * Math.PI)/180;
+				house_small_3_walls.rotation.y = (180 * Math.PI)/180;
+				house_small_3_walls.rotation.z = (270 * Math.PI)/180;
+				house_small_3_walls.scale.set(0.7,0.7,0.7);
+				scene.add(house_small_3_walls);
+				obstacles.push(house_small_3_walls);
+				house_small_3_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
+				house_small_3_roof.position.x = -50;
+				house_small_3_roof.position.y = 26;
+				house_small_3_roof.position.z = -70;
+				house_small_3_roof.rotation.x = (90 * Math.PI)/180;
+				house_small_3_roof.rotation.y = (180 * Math.PI)/180;
+				house_small_3_roof.rotation.z = (90 * Math.PI)/180;
+				house_small_3_roof.scale.set(0.7,0.7,0.7);
+				scene.add(house_small_3_roof);
+				house_small_3_door = new THREE.Mesh(house_door_geometry, house_door_material);
+				house_small_3_door.position.x = -32;
+				house_small_3_door.position.y = 10;
+				house_small_3_door.position.z = -85;
+				house_small_3_door.rotation.y = (90 * Math.PI)/180;
+				house_small_3_door.scale.set(0.7,0.7,0.7);
+				scene.add(house_small_3_door);
+
+				// ADDING THE FOURTH HOUSE
+				house_small_4_walls = new THREE.Mesh(house_small_walls_geometry, house_small_walls_material);
+				house_small_4_walls.position.x = -50;
+				house_small_4_walls.position.y = 11;
+				house_small_4_walls.position.z = 40;
+				house_small_4_walls.rotation.x = (90 * Math.PI)/180;
+				house_small_4_walls.rotation.y = (180 * Math.PI)/180;
+				house_small_4_walls.rotation.z = (270 * Math.PI)/180;
+				house_small_4_walls.scale.set(0.7,0.7,0.7);
+				scene.add(house_small_4_walls);
+				obstacles.push(house_small_4_walls);
+				house_small_4_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
+				house_small_4_roof.position.x = -50;
+				house_small_4_roof.position.y = 26;
+				house_small_4_roof.position.z = 40;
+				house_small_4_roof.rotation.x = (90 * Math.PI)/180;
+				house_small_4_roof.rotation.y = (180 * Math.PI)/180;
+				house_small_4_roof.rotation.z = (90 * Math.PI)/180;
+				house_small_4_roof.scale.set(0.7,0.7,0.7);
+				scene.add(house_small_4_roof);
+				house_small_4_door = new THREE.Mesh(house_door_geometry, house_door_material);
+				house_small_4_door.position.x = -32;
+				house_small_4_door.position.y = 10;
+				house_small_4_door.position.z = 25;
+				house_small_4_door.rotation.y = (90 * Math.PI)/180;
+				house_small_4_door.scale.set(0.7,0.7,0.7);
+				scene.add(house_small_4_door);
+
+				// ADDING THE BIG HOUSE
+				house_big_1_walls = new THREE.Mesh(house_big_walls_geometry, house_big_walls_material);
+				house_big_1_walls.position.x = 4;
+				house_big_1_walls.position.y = 11;
+				house_big_1_walls.position.z = -200;
+				house_big_1_walls.rotation.x = (90 * Math.PI)/180;
+				house_big_1_walls.rotation.y = (180 * Math.PI)/180;
+				house_big_1_walls.rotation.z = (180 * Math.PI)/180;
+				house_big_1_walls.scale.set(0.7,0.7,0.7);
+				scene.add(house_big_1_walls);
+				obstacles.push(house_big_1_walls);
+				house_big_1_roof = new THREE.Mesh(house_big_roof_geometry, house_big_roof_material);
+				house_big_1_roof.position.x = 4;
+				house_big_1_roof.position.y = 28;
+				house_big_1_roof.position.z = -196;
+				house_big_1_roof.rotation.x = (90 * Math.PI)/180;
+				house_big_1_roof.rotation.y = (180 * Math.PI)/180;
+				house_big_1_roof.rotation.z = (180 * Math.PI)/180;
+				house_big_1_roof.scale.set(0.7,0.7,0.7);
+				scene.add(house_big_1_roof);
+				house_big_1_door = new THREE.Mesh(house_door_geometry, house_door_material);
+				house_big_1_door.position.x = -2;
+				house_big_1_door.position.y = 10;
+				house_big_1_door.position.z = -165;
+				house_big_1_door.rotation.z = (180 * Math.PI)/180;
+				house_big_1_door.scale.set(0.7,0.7,0.7);
+				scene.add(house_big_1_door);
+				}
+
+			function update()
+				{
+				// REQUESTING THE FRAME ANIMATION
+				requestAnimationFrame(update);
+
+				// MOVING THE OCEAN TEXTURE
+				oceanTexture.offset.y = oceanTexture.offset.y - 0.0002;
+
+				// MAKING THE HERO TO FOLLOW THE CAMERA
+				hero.position.x = camera.position.x;
+				hero.position.z = camera.position.z;
+
+				// CHECKING IF THE UP KEY IS PRESSED
+				if (keyUpPressed==true)
+					{
+					// MOVING THE HERO FORWARD
+					hero.position.z = hero.position.z - heroDistanceCheck;
+
+					// CHECKING IF THE HERO CAN MOVE
+					if (detectCollisions()==false)
+						{
+						// MOVING THE CAMERA FORWARD
+						camera.position.z = camera.position.z - heroSpeed;
+						}
+						else
+						{
+						// MOVING THE HERO BACKWARDS
+						hero.position.z = hero.position.z + heroSpeed;
+						}
+					}
+
+				// CHECKING IF THE DOWN KEY IS PRESSED
+				if (keyDownPressed==true)
+					{
+					// MOVING THE HERO BACKWARDS
+					hero.position.z = hero.position.z + heroDistanceCheck;
+
+					// CHECKING IF THE HERO CAN MOVE
+					if (detectCollisions()==false)
+						{
+						// MOVING THE CAMERA BACKWARDS
+						camera.position.z = camera.position.z + heroSpeed;
+						}
+						else
+						{
+						// MOVING THE HERO FORWARD
+						hero.position.z = hero.position.z - heroSpeed;
+						}
+					}
+
+				// CHECKING IF THE LEFT KEY IS PRESSED
+				if (keyLeftPressed==true)
+					{
+					// MOVING THE HERO TO THE LEFT
+					hero.position.x = hero.position.x - heroDistanceCheck;
+
+					// CHECKING IF THE HERO CAN MOVE
+					if (detectCollisions()==false)
+						{
+						// MOVING THE CAMERA TO THE LEFT
+						camera.position.x = camera.position.x - heroSpeed;
+						}
+						else
+						{
+						// MOVING THE HERO TO THE RIGHT
+						hero.position.x = hero.position.x + heroSpeed;
+						}
+					}
+
+				// CHECKING IF THE RIGHT KEY IS PRESSED
+				if (keyRightPressed==true)
+					{
+					// MOVING THE HERO TO THE RIGHT
+					hero.position.x = hero.position.x + heroDistanceCheck;
+
+					// CHECKING IF THE HERO CAN MOVE
+					if (detectCollisions()==false)
+						{
+						// MOVING THE CAMERA TO THE RIGHT
+						camera.position.x = camera.position.x + heroSpeed;
+						}
+						else
+						{
+						// MOVING THE HERO TO THE LEFT
+						hero.position.x = hero.position.x - heroSpeed;
+						}
+					}
+
+				// RENDERING THE SCENE
+				renderer.render(scene, camera);
+				}
+
+			function detectCollisions()
+				{
+				// LOOPING ALL THE OBSTACLES
+				for (var i = 0; i < obstacles.length; i ++)
+					{
+					// CREATING A BOX ARROUND THE HERO CURRENT POSITION
+					var heroMeshBox = new THREE.Box3().setFromObject(hero);
+
+					// CREATING A BOX ARROUND THE OBSTACLE CURRENT POSITION
+					var obstacleMeshBox = new THREE.Box3().setFromObject(obstacles[i]);
+
+					// CHECKING IF THERE IS AN INTERSECTION BETWEEN TWO BOXES
+					if (heroMeshBox.intersectsBox(obstacleMeshBox)==true)
+						{
+						// RETURNING THAT THERE IS A COLLISION BETWEEN THE HERO AND THE OBSTACLE
+						return true;
+						}
+					}
+
+				// RETURNING THAT THERE IS NO COLLISION
+				return false;
+				}
+
+			function resizeCanvasToFitWindow()
+				{
+				try
+					{
+					// UPDATING THE CAMERA ASPECT
+					camera.aspect = window.innerWidth / (window.innerHeight);
+
+					// UPDATING THE CAMERA PROJECTION
+					camera.updateProjectionMatrix();
+
+					// UPDATING THE RENDERING SIZE
+					renderer.setSize(window.innerWidth, window.innerHeight);
+					}
+					catch(err)
+					{
+					}
+				}
+
+			// CREATING THE SCENE
+			create();
+
+			window.oncontextmenu = function()
+				{
+				// DISABLING THE CONTEXT MENU
+				return false;
+				}
+
+			window.addEventListener("resize", function()
+				{
+				// RESIZING THE CANVAS TO FIT THE WINDOW
+				resizeCanvasToFitWindow();
+				});
+
+			window.addEventListener("load", function()
+				{
+				// SETTING WHAT WILL HAPPEN WHEN THE USER IS PRESSING A KEY
+				window.addEventListener("keydown", function ()
+					{
+					if (event.keyCode === 37 || event.keyCode === 65) // LEFT KEY OR A
+						{
+						// SETTING THAT THE LEFT KEY IS PRESSED
+						keyLeftPressed = true;
+						}
+					else if (event.keyCode === 39 || event.keyCode === 68) // RIGHT KEY OR D
+						{
+						// SETTING THAT THE RIGHT KEY IS PRESSED
+						keyRightPressed = true;
+						}
+					else if (event.keyCode === 38 || event.keyCode === 87) // RIGHT KEY OR W
+						{
+						// SETTING THAT THE UP KEY IS PRESSED
+						keyUpPressed = true;
+						}
+					else if (event.keyCode === 40 || event.keyCode === 83) // RIGHT KEY OR S
+						{
+						// SETTING THAT THE DOWN KEY IS PRESSED
+						keyDownPressed = true;
+						}
+					});
+
+				// SETTING WHAT WILL HAPPEN WHEN THE USER STOPS TO PRESSING A KEY
+				window.addEventListener("keyup", function ()
+					{
+					if (event.keyCode === 37 || event.keyCode === 65) // LEFT KEY OR A
+						{
+						// SETTING THAT THE LEFT KEY IS NOT PRESSED
+						keyLeftPressed = false;
+						}
+					else if (event.keyCode === 39 || event.keyCode === 68) // RIGHT KEY OR D
+						{
+						// SETTING THAT THE RIGHT KEY IS NOT PRESSED
+						keyRightPressed = false;
+						}
+					else if (event.keyCode === 38 || event.keyCode === 87) // RIGHT KEY OR W
+						{
+						// SETTING THAT THE UP KEY IS NOT PRESSED
+						keyUpPressed = false;
+						}
+					else if (event.keyCode === 40 || event.keyCode === 83) // RIGHT KEY OR S
+						{
+						// SETTING THAT THE DOWN KEY IS NOT PRESSED
+						keyDownPressed = false;
+						}
+					});
+
+				// SETTING WHAT WILL HAPPEN WHEN THE WINDOW IS ON BLUR
+				window.addEventListener("blur", function ()
+					{
+					// DISABLING ANY PRESSED KEY
+					keyUpPressed = false;
+					keyDownPressed = false;
+					keyLeftPressed = false;
+					keyRightPressed = false;
+					});
+
+				// UPDATING THE ABOUT LABEL
+				document.getElementById("about").innerHTML = STRING_ABOUT;
+
+				// HIDING THE LOADING SPLASH
+				document.getElementsByClassName("virtual-town-pleasewait")[0].style.display = "none";
+
+				// SHOWING THE GAME CONTAINER
+				document.getElementsByClassName("virtual-town-container")[0].style.display = "block";
+
+				// SHOWING THE ABOUT BOX
+				document.getElementById("about").style.display = "block";
+
+				// UPDATING THE SCENE
+				update();
+
+				// RESIZING THE CANVAS TO FIT THE WINDOW
+				resizeCanvasToFitWindow();
+
+				// FADING OUT THE ABOUT BOX
+				setTimeout(function()
+					{
+					document.getElementById("about").className = "virtual-town-about-label virtual-town-about-hidden";
+					}, 3000);
+
+				// HIDING THE ABOUT BOX
+				setTimeout(function()
+					{
+					document.getElementById("about").style.display = "none";
+					}, 4500);
+				});
+
+			if ("serviceWorker" in navigator)
+				{
+				navigator.serviceWorker.register("worker.js").then(function(registration)
+					{
+					// Registration successful
+					//console.log("ServiceWorker registration successful with scope: " + registration.scope);
+					}).catch(function(err)
+					{
+					// Registration failed
+					//console.log("ServiceWorker registration failed: " + err);
+					});
+				}
+		</script>
+	</body>
+</html>
