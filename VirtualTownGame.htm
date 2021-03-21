@@ -66,7 +66,8 @@
 			var cameraDirection;
 			var renderer;
 			var hemisphereLight;
-			var directionalLight;
+			var directionalLight1;
+			var directionalLight2;
 
 			var hero;
 			var heroSpeed = 3;
@@ -178,31 +179,13 @@
 				scene.add(oceanFloor);
 
 				// ADDING THE LIGHTS
-				var spotLight;
-				var target;
-				var targetGeometry;
-				var targetMaterial;
-				for (var i = 0; i < 5; i += 1)
-					{
-					targetGeometry = new THREE.BoxGeometry(1, 1, 1);
-					targetMaterial = new THREE.MeshNormalMaterial();
-					target = new THREE.Mesh(targetGeometry, targetMaterial);
-					target.position.set(0, 2, i * 1000 / 5 - 1000 / 2.50);
-					target.visible = false;
-					scene.add(target);
-
-					spotLight = new THREE.SpotLight(0xFFFFFF, 0.1);
-					spotLight.position.set(150, i * 1000 / 5 - 1000 / 2.5, -350);
-					spotLight.castShadow = true;
-					spotLight.target = target;
-					spotLight.shadow.mapSize.width = 1024;
-					spotLight.shadow.mapSize.height = 1024;
-					}
-				directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-				directionalLight.position.set(0, 99, 0);
+				directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.45);
+				directionalLight1.position.set(-60, 99, 0);
+				directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.45);
+				directionalLight2.position.set(60, 99, 0);
 				hemisphereLight = new THREE.HemisphereLight(0xFFB74D, 0x37474F, 1);
 				hemisphereLight.position.y = 500;
-				scene.add(directionalLight,hemisphereLight);
+				scene.add(directionalLight1,directionalLight2,hemisphereLight);
 
 				// ADDING THE SKY
 				var canvas = document.createElement("canvas");
