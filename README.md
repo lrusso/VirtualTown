@@ -15,8 +15,6 @@ https://github.com/lrusso/VirtualJoystick
 ## Roadmap:
 
 * Moving camera up and down while walking.
-* Improving lights.
-* Improving house textures.
 * Improving the shape of the island ground.
 * Adding fountain.
 * Adding trees.
