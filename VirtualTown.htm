@@ -64,19 +64,16 @@
 			var PLANE_WIDTH = 20;
 			var PLANE_LENGTH = 1000;
 
-			var camera;
 			var containerWidth = 0;
 			var containerHeight = 0;
-			var directionalLight;
-			var hemisphereLight;
-			var renderer;
 			var scene;
+			var camera;
+			var renderer;
+			var hemisphereLight;
+			var directionalLight;
 
 			var hero;
-			var heroGeometry = new THREE.BoxGeometry( 1, 1, 1 );
-			var heroMaterial = new THREE.MeshBasicMaterial( { color: 0x000000 } );
-
-			var obstacles = [];
+			var heroSpeed = 1.3;
 
 			var grassLeft;
 			var grassLeftGeometry;
@@ -88,6 +85,8 @@
 			var oceanMaterial;
 			var oceanTexture;
 			var oceanLoader;
+
+			var obstacles = [];
 
 			var keyUpPressed = false;
 			var keyDownPressed = false;
@@ -136,7 +135,7 @@
 				scene.add(camera);
 
 				// ADDING THE HERO
-				hero = new THREE.Mesh(heroGeometry, heroMaterial);
+				hero = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({color:0x000000}));
 				hero.position.y = 10;
 				hero.visible = false;
 				scene.add(hero);
@@ -398,7 +397,7 @@
 
 			function update()
 				{
-				// REQUESTING THE FRAME
+				// REQUESTING THE FRAME ANIMATION
 				requestAnimationFrame(update);
 
 				// MOVING THE OCEAN TEXTURE
@@ -412,18 +411,18 @@
 				if (keyUpPressed==true)
 					{
 					// MOVING THE HERO FORWARD
-					hero.position.z = hero.position.z - 1.5;
+					hero.position.z = hero.position.z - heroSpeed;
 
 					// CHECKING IF THE HERO CAN MOVE
 					if (detectCollisions()==false)
 						{
 						// MOVING THE CAMERA FORWARD
-						camera.position.z = camera.position.z - 1.5;
+						camera.position.z = camera.position.z - heroSpeed;
 						}
 						else
 						{
 						// MOVING THE HERO BACKWARDS
-						hero.position.z = hero.position.z + 1.5;
+						hero.position.z = hero.position.z + heroSpeed;
 						}
 					}
 
@@ -431,46 +430,56 @@
 				if (keyDownPressed==true)
 					{
 					// MOVING THE HERO BACKWARDS
-					hero.position.z = hero.position.z + 1.5;
+					hero.position.z = hero.position.z + heroSpeed;
 
 					// CHECKING IF THE HERO CAN MOVE
 					if (detectCollisions()==false)
 						{
 						// MOVING THE CAMERA BACKWARDS
-						camera.position.z = camera.position.z + 1.5;
+						camera.position.z = camera.position.z + heroSpeed;
 						}
 						else
 						{
 						// MOVING THE HERO FORWARD
-						hero.position.z = hero.position.z - 1.5;
+						hero.position.z = hero.position.z - heroSpeed;
 						}
 					}
 
+				// CHECKING IF THE LEFT KEY IS PRESSED
 				if (keyLeftPressed==true)
 					{
-					hero.position.x = hero.position.x - 1.5;
+					// MOVING THE HERO TO THE LEFT
+					hero.position.x = hero.position.x - heroSpeed;
 
+					// CHECKING IF THE HERO CAN MOVE
 					if (detectCollisions()==false)
 						{
-						camera.position.x = camera.position.x - 1.5;
+						// MOVING THE CAMERA TO THE LEFT
+						camera.position.x = camera.position.x - heroSpeed;
 						}
 						else
 						{
-						hero.position.x = hero.position.x + 1.5;
+						// MOVING THE HERO TO THE RIGHT
+						hero.position.x = hero.position.x + heroSpeed;
 						}
 					}
 
+				// CHECKING IF THE RIGHT KEY IS PRESSED
 				if (keyRightPressed==true)
 					{
-					hero.position.x = hero.position.x + 1.5;
+					// MOVING THE HERO TO THE RIGHT
+					hero.position.x = hero.position.x + heroSpeed;
 
+					// CHECKING IF THE HERO CAN MOVE
 					if (detectCollisions()==false)
 						{
-						camera.position.x = camera.position.x + 1.5;
+						// MOVING THE CAMERA TO THE RIGHT
+						camera.position.x = camera.position.x + heroSpeed;
 						}
 						else
 						{
-						hero.position.x = hero.position.x - 1.5;
+						// MOVING THE HERO TO THE LEFT
+						hero.position.x = hero.position.x - heroSpeed;
 						}
 					}
 
