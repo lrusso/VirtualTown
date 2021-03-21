@@ -61,13 +61,14 @@
 			var containerHeight;
 			var scene;
 			var camera;
+			var cameraDirection;
 			var renderer;
 			var hemisphereLight;
 			var directionalLight;
 
 			var hero;
 			var heroSpeed = 1.3;
-			var heroDistanceCheck = 10;
+			var heroDistanceCheck = 5;
 
 			var grassFloor;
 			var grassMaterial;
@@ -128,6 +129,9 @@
 				camera = new THREE.PerspectiveCamera(45, containerWidth / containerHeight, 1, 3000);
 				camera.position.set(-2, 11, 0);
 				scene.add(camera);
+
+				// ADDING A VECTOR IN ORDER TO USE IT FOR THE CAMERA DIRECTION
+				cameraDirection = new THREE.Vector3();
 
 				// ADDING THE HERO
 				hero = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({color:0x000000}));
@@ -403,82 +407,78 @@
 
 				// MAKING THE HERO TO FOLLOW THE CAMERA
 				hero.position.x = camera.position.x;
+				hero.position.y = camera.position.y;
 				hero.position.z = camera.position.z;
+				hero.rotation.x = camera.rotation.x;
+				hero.rotation.y = camera.rotation.y;
+				hero.rotation.z = camera.rotation.z;
 
 				// CHECKING IF THE UP KEY IS PRESSED
 				if (keyUpPressed==true)
 					{
+					// UPDATING THE CAMERA DIRECTION
+					camera.getWorldDirection(cameraDirection);
+
 					// MOVING THE HERO FORWARD
-					hero.position.z = hero.position.z - heroDistanceCheck;
+					hero.position.addScaledVector(cameraDirection,heroDistanceCheck);
 
 					// CHECKING IF THE HERO CAN MOVE
 					if (detectCollisions()==false)
 						{
 						// MOVING THE CAMERA FORWARD
-						camera.position.z = camera.position.z - heroSpeed;
+						camera.position.addScaledVector(cameraDirection,heroSpeed);
 						}
 						else
 						{
-						// MOVING THE HERO BACKWARDS
-						hero.position.z = hero.position.z + heroSpeed;
+						// RESTORING THE HERO LOCATION
+						hero.position.x = camera.position.x;
+						hero.position.y = camera.position.y;
+						hero.position.z = camera.position.z;
+						hero.rotation.x = camera.rotation.x;
+						hero.rotation.y = camera.rotation.y;
+						hero.rotation.z = camera.rotation.z;
 						}
 					}
 
 				// CHECKING IF THE DOWN KEY IS PRESSED
 				if (keyDownPressed==true)
 					{
+					// UPDATING THE CAMERA DIRECTION
+					camera.getWorldDirection(cameraDirection);
+
 					// MOVING THE HERO BACKWARDS
-					hero.position.z = hero.position.z + heroDistanceCheck;
+					hero.position.addScaledVector(cameraDirection,-heroDistanceCheck);
 
 					// CHECKING IF THE HERO CAN MOVE
 					if (detectCollisions()==false)
 						{
 						// MOVING THE CAMERA BACKWARDS
-						camera.position.z = camera.position.z + heroSpeed;
+						camera.position.addScaledVector(cameraDirection,-heroSpeed);
 						}
 						else
 						{
-						// MOVING THE HERO FORWARD
-						hero.position.z = hero.position.z - heroSpeed;
+						// RESTORING THE HERO LOCATION
+						hero.position.x = camera.position.x;
+						hero.position.y = camera.position.y;
+						hero.position.z = camera.position.z;
+						hero.rotation.x = camera.rotation.x;
+						hero.rotation.y = camera.rotation.y;
+						hero.rotation.z = camera.rotation.z;
 						}
 					}
 
 				// CHECKING IF THE LEFT KEY IS PRESSED
 				if (keyLeftPressed==true)
 					{
-					// MOVING THE HERO TO THE LEFT
-					hero.position.x = hero.position.x - heroDistanceCheck;
-
-					// CHECKING IF THE HERO CAN MOVE
-					if (detectCollisions()==false)
-						{
-						// MOVING THE CAMERA TO THE LEFT
-						camera.position.x = camera.position.x - heroSpeed;
-						}
-						else
-						{
-						// MOVING THE HERO TO THE RIGHT
-						hero.position.x = hero.position.x + heroSpeed;
-						}
+					camera.rotation.y = camera.rotation.y + 0.03;
+					hero.rotation.y = hero.rotation.y + 0.03;
 					}
 
 				// CHECKING IF THE RIGHT KEY IS PRESSED
 				if (keyRightPressed==true)
 					{
-					// MOVING THE HERO TO THE RIGHT
-					hero.position.x = hero.position.x + heroDistanceCheck;
-
-					// CHECKING IF THE HERO CAN MOVE
-					if (detectCollisions()==false)
-						{
-						// MOVING THE CAMERA TO THE RIGHT
-						camera.position.x = camera.position.x + heroSpeed;
-						}
-						else
-						{
-						// MOVING THE HERO TO THE LEFT
-						hero.position.x = hero.position.x - heroSpeed;
-						}
+					camera.rotation.y = camera.rotation.y - 0.03;
+					hero.rotation.y = hero.rotation.y - 0.03;
 					}
 
 				// RENDERING THE SCENE
