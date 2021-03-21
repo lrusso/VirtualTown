@@ -108,73 +108,7 @@
 				STRING_ABOUT = "Designed by www.lrusso.com";
 				}
 
-			function render()
-				{
-				requestAnimationFrame(render);
-
-				oceanTexture.offset.y -= .0002;
-				hero.position.x = camera.position.x;
-				hero.position.z = camera.position.z;
-
-				if (keyUpPressed==true)
-					{
-					hero.position.z = hero.position.z - 1.5;
-					if (detectCollisions()==false)
-						{
-						camera.position.z = camera.position.z - 1.5;
-						}
-						else
-						{
-						hero.position.z = hero.position.z + 1.5;
-						}
-					}
-
-				if (keyDownPressed==true)
-					{
-					hero.position.z = hero.position.z + 1.5;
-
-					if (detectCollisions()==false)
-						{
-						camera.position.z = camera.position.z + 1.5;
-						}
-						else
-						{
-						hero.position.z = hero.position.z - 1.5;
-						}
-					}
-
-				if (keyLeftPressed==true)
-					{
-					hero.position.x = hero.position.x - 1.5;
-
-					if (detectCollisions()==false)
-						{
-						camera.position.x = camera.position.x - 1.5;
-						}
-						else
-						{
-						hero.position.x = hero.position.x + 1.5;
-						}
-					}
-
-				if (keyRightPressed==true)
-					{
-					hero.position.x = hero.position.x + 1.5;
-
-					if (detectCollisions()==false)
-						{
-						camera.position.x = camera.position.x + 1.5;
-						}
-						else
-						{
-						hero.position.x = hero.position.x - 1.5;
-						}
-					}
-
-				renderer.render(scene, camera);
-				}
-
-			function loadGameResources()
+			function create()
 				{
 				// GETTING THE CONTAINER SIZE
 				containerWidth = document.getElementsByClassName("virtual-town-container")[0].offsetWidth;
@@ -201,6 +135,7 @@
 				camera.position.set(-10, 10, 530);
 				scene.add(camera);
 
+				// ADDING THE HERO
 				hero = new THREE.Mesh(heroGeometry, heroMaterial);
 				hero.position.y = 10;
 				hero.visible = false;
@@ -461,6 +396,82 @@
 				scene.add(house_big_1_door);
 				}
 
+			function update()
+				{
+				// REQUESTING THE FRAME
+				requestAnimationFrame(update);
+
+				// MOVING THE OCEAN TEXTURE
+				oceanTexture.offset.y -= .0002;
+
+				// MAKING THE HERO TO FOLLOW THE CAMERA
+				hero.position.x = camera.position.x;
+				hero.position.z = camera.position.z;
+
+				// CHECKING IF THE UP KEY IS PRESSED
+				if (keyUpPressed==true)
+					{
+					// MOVING THE HERO FORWARD
+					hero.position.z = hero.position.z - 1.5;
+
+					// CHECKING IF THE HERO CAN PASS
+					if (detectCollisions()==false)
+						{
+						// MOVING THE CAMERA FORWARD
+						camera.position.z = camera.position.z - 1.5;
+						}
+						else
+						{
+						// MOVING THE HERO BACKWARDS
+						hero.position.z = hero.position.z + 1.5;
+						}
+					}
+
+				if (keyDownPressed==true)
+					{
+					hero.position.z = hero.position.z + 1.5;
+
+					if (detectCollisions()==false)
+						{
+						camera.position.z = camera.position.z + 1.5;
+						}
+						else
+						{
+						hero.position.z = hero.position.z - 1.5;
+						}
+					}
+
+				if (keyLeftPressed==true)
+					{
+					hero.position.x = hero.position.x - 1.5;
+
+					if (detectCollisions()==false)
+						{
+						camera.position.x = camera.position.x - 1.5;
+						}
+						else
+						{
+						hero.position.x = hero.position.x + 1.5;
+						}
+					}
+
+				if (keyRightPressed==true)
+					{
+					hero.position.x = hero.position.x + 1.5;
+
+					if (detectCollisions()==false)
+						{
+						camera.position.x = camera.position.x + 1.5;
+						}
+						else
+						{
+						hero.position.x = hero.position.x - 1.5;
+						}
+					}
+
+				renderer.render(scene, camera);
+				}
+
 			function detectCollisions()
 				{
 				// LOOPING ALL THE OBSTACLES
@@ -496,9 +507,6 @@
 
 					// UPDATING THE RENDERING SIZE
 					renderer.setSize(window.innerWidth, window.innerHeight);
-
-					// UPDATING THE CLOUDS POSITIONS
-					updateCloudsPositions();
 					}
 					catch(err)
 					{
@@ -506,7 +514,7 @@
 				}
 
 			// LOADING THE GAME RESOURCES
-			loadGameResources();
+			create();
 
 			window.oncontextmenu = function()
 				{
@@ -527,18 +535,22 @@
 					{
 					if (event.keyCode === 37 || event.keyCode === 65) // LEFT KEY OR A
 						{
+						// SETTING THAT THE LEFT KEY IS PRESSED
 						keyLeftPressed = true;
 						}
 					else if (event.keyCode === 39 || event.keyCode === 68) // RIGHT KEY OR D
 						{
+						// SETTING THAT THE RIGHT KEY IS PRESSED
 						keyRightPressed = true;
 						}
 					else if (event.keyCode === 38 || event.keyCode === 87) // RIGHT KEY OR W
 						{
+						// SETTING THAT THE UP KEY IS PRESSED
 						keyUpPressed = true;
 						}
 					else if (event.keyCode === 40 || event.keyCode === 83) // RIGHT KEY OR S
 						{
+						// SETTING THAT THE DOWN KEY IS PRESSED
 						keyDownPressed = true;
 						}
 					});
@@ -546,18 +558,22 @@
 					{
 					if (event.keyCode === 37 || event.keyCode === 65) // LEFT KEY OR A
 						{
+						// SETTING THAT THE LEFT KEY IS NOT PRESSED
 						keyLeftPressed = false;
 						}
 					else if (event.keyCode === 39 || event.keyCode === 68) // RIGHT KEY OR D
 						{
+						// SETTING THAT THE RIGHT KEY IS NOT PRESSED
 						keyRightPressed = false;
 						}
 					else if (event.keyCode === 38 || event.keyCode === 87) // RIGHT KEY OR W
 						{
+						// SETTING THAT THE UP KEY IS NOT PRESSED
 						keyUpPressed = false;
 						}
 					else if (event.keyCode === 40 || event.keyCode === 83) // RIGHT KEY OR S
 						{
+						// SETTING THAT THE DOWN KEY IS NOT PRESSED
 						keyDownPressed = false;
 						}
 					});
@@ -575,7 +591,7 @@
 				document.getElementById("about").style.display = "block";
 
 				// RENDERING THE GAME
-				render();
+				update();
 
 				// RESIZING THE CANVAS TO FIT THE WINDOW
 				resizeCanvasToFitWindow();
