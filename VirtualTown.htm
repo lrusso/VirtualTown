@@ -61,11 +61,8 @@
 		<div class="virtual-town-pleasewait"><div class="virtual-town-pleasewait-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
 		<script src="VirtualTown.js"></script>
 		<script>
-			var PLANE_WIDTH = 20;
-			var PLANE_LENGTH = 1000;
-
-			var containerWidth = 0;
-			var containerHeight = 0;
+			var containerWidth;
+			var containerHeight;
 			var scene;
 			var camera;
 			var renderer;
@@ -74,6 +71,7 @@
 
 			var hero;
 			var heroSpeed = 1.3;
+			var heroDistanceCheck = 10;
 
 			var grassFloor;
 			var grassMaterial;
@@ -132,7 +130,7 @@
 
 				// ADDING THE CAMERA
 				camera = new THREE.PerspectiveCamera(45, containerWidth / containerHeight, 1, 3000);
-				camera.position.set(-10, 10, 530);
+				camera.position.set(0, 11, 0);
 				scene.add(camera);
 
 				// ADDING THE HERO
@@ -147,15 +145,16 @@
 					{
 					grassTexture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 					grassTexture.offset.set( 0, 0 );
-					grassTexture.repeat.set( 1, 10 );
+					grassTexture.repeat.set( 10, 10 );
 					});
 				grassMaterial = new THREE.MeshPhongMaterial({map:grassTexture});
-				grassGeometry = new THREE.BoxGeometry(200, PLANE_LENGTH + PLANE_LENGTH / 10, 1);
+				grassGeometry = new THREE.BoxGeometry(200, 400, 1);
 				grassFloor = new THREE.Mesh(grassGeometry, grassMaterial);
 				grassFloor.receiveShadow = true;
 				grassFloor.rotation.x = 1.570;
-				grassFloor.position.x = -PLANE_WIDTH;
+				grassFloor.position.x = 0;
 				grassFloor.position.y = 1;
+				grassFloor.position.z = -90;
 				scene.add(grassFloor);
 
 				// ADDING THE OCEAN
@@ -184,12 +183,12 @@
 					targetGeometry = new THREE.BoxGeometry(1, 1, 1);
 					targetMaterial = new THREE.MeshNormalMaterial();
 					target = new THREE.Mesh(targetGeometry, targetMaterial);
-					target.position.set(0, 2, i * PLANE_LENGTH / 5 - PLANE_LENGTH / 2.50);
+					target.position.set(0, 2, i * 1000 / 5 - 1000 / 2.50);
 					target.visible = false;
 					scene.add(target);
 
 					spotLight = new THREE.SpotLight(0xFFFFFF, 0.1);
-					spotLight.position.set(150, i * PLANE_LENGTH / 5 - PLANE_LENGTH / 2.5, -350);
+					spotLight.position.set(150, i * 1000 / 5 - 1000 / 2.5, -350);
 					spotLight.castShadow = true;
 					spotLight.target = target;
 					spotLight.shadow.mapSize.width = 1024;
@@ -259,7 +258,7 @@
 				house_small_1_walls = new THREE.Mesh(house_small_walls_geometry, house_small_walls_material);
 				house_small_1_walls.position.x = 50;
 				house_small_1_walls.position.y = 11;
-				house_small_1_walls.position.z = 450;
+				house_small_1_walls.position.z = -70;
 				house_small_1_walls.rotation.x = (90 * Math.PI)/180;
 				house_small_1_walls.rotation.y = (180 * Math.PI)/180;
 				house_small_1_walls.rotation.z = (90 * Math.PI)/180;
@@ -269,16 +268,16 @@
 				house_small_1_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
 				house_small_1_roof.position.x = 50;
 				house_small_1_roof.position.y = 26;
-				house_small_1_roof.position.z = 450;
+				house_small_1_roof.position.z = -70;
 				house_small_1_roof.rotation.x = (90 * Math.PI)/180;
 				house_small_1_roof.rotation.y = (180 * Math.PI)/180;
 				house_small_1_roof.rotation.z = (90 * Math.PI)/180;
 				house_small_1_roof.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_1_roof);
 				house_small_1_door = new THREE.Mesh(house_door_geometry, house_door_material);
-				house_small_1_door.position.x = 31;
+				house_small_1_door.position.x = 32;
 				house_small_1_door.position.y = 10;
-				house_small_1_door.position.z = 465;
+				house_small_1_door.position.z = -55;
 				house_small_1_door.rotation.y = (270 * Math.PI)/180;
 				house_small_1_door.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_1_door);
@@ -287,7 +286,7 @@
 				house_small_2_walls = new THREE.Mesh(house_small_walls_geometry, house_small_walls_material);
 				house_small_2_walls.position.x = 50;
 				house_small_2_walls.position.y = 11;
-				house_small_2_walls.position.z = 350;
+				house_small_2_walls.position.z = 40;
 				house_small_2_walls.rotation.x = (90 * Math.PI)/180;
 				house_small_2_walls.rotation.y = (180 * Math.PI)/180;
 				house_small_2_walls.rotation.z = (90 * Math.PI)/180;
@@ -297,25 +296,25 @@
 				house_small_2_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
 				house_small_2_roof.position.x = 50;
 				house_small_2_roof.position.y = 26;
-				house_small_2_roof.position.z = 350;
+				house_small_2_roof.position.z = 40;
 				house_small_2_roof.rotation.x = (90 * Math.PI)/180;
 				house_small_2_roof.rotation.y = (180 * Math.PI)/180;
 				house_small_2_roof.rotation.z = (90 * Math.PI)/180;
 				house_small_2_roof.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_2_roof);
 				house_small_2_door = new THREE.Mesh(house_door_geometry, house_door_material);
-				house_small_2_door.position.x = 31;
+				house_small_2_door.position.x = 32;
 				house_small_2_door.position.y = 10;
-				house_small_2_door.position.z = 365;
+				house_small_2_door.position.z = 55;
 				house_small_2_door.rotation.y = (270 * Math.PI)/180;
 				house_small_2_door.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_2_door);
 
 				// ADDING THE TIRTH HOUSE
 				house_small_3_walls = new THREE.Mesh(house_small_walls_geometry, house_small_walls_material);
-				house_small_3_walls.position.x = -90;
+				house_small_3_walls.position.x = -50;
 				house_small_3_walls.position.y = 11;
-				house_small_3_walls.position.z = 350;
+				house_small_3_walls.position.z = -70;
 				house_small_3_walls.rotation.x = (90 * Math.PI)/180;
 				house_small_3_walls.rotation.y = (180 * Math.PI)/180;
 				house_small_3_walls.rotation.z = (270 * Math.PI)/180;
@@ -323,27 +322,27 @@
 				scene.add(house_small_3_walls);
 				obstacles.push(house_small_3_walls);
 				house_small_3_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
-				house_small_3_roof.position.x = -90;
+				house_small_3_roof.position.x = -50;
 				house_small_3_roof.position.y = 26;
-				house_small_3_roof.position.z = 350;
+				house_small_3_roof.position.z = -70;
 				house_small_3_roof.rotation.x = (90 * Math.PI)/180;
 				house_small_3_roof.rotation.y = (180 * Math.PI)/180;
 				house_small_3_roof.rotation.z = (90 * Math.PI)/180;
 				house_small_3_roof.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_3_roof);
 				house_small_3_door = new THREE.Mesh(house_door_geometry, house_door_material);
-				house_small_3_door.position.x = -71;
+				house_small_3_door.position.x = -32;
 				house_small_3_door.position.y = 10;
-				house_small_3_door.position.z = 335;
+				house_small_3_door.position.z = -85;
 				house_small_3_door.rotation.y = (90 * Math.PI)/180;
 				house_small_3_door.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_3_door);
 
 				// ADDING THE FOURTH HOUSE
 				house_small_4_walls = new THREE.Mesh(house_small_walls_geometry, house_small_walls_material);
-				house_small_4_walls.position.x = -90;
+				house_small_4_walls.position.x = -50;
 				house_small_4_walls.position.y = 11;
-				house_small_4_walls.position.z = 450;
+				house_small_4_walls.position.z = 40;
 				house_small_4_walls.rotation.x = (90 * Math.PI)/180;
 				house_small_4_walls.rotation.y = (180 * Math.PI)/180;
 				house_small_4_walls.rotation.z = (270 * Math.PI)/180;
@@ -351,27 +350,27 @@
 				scene.add(house_small_4_walls);
 				obstacles.push(house_small_4_walls);
 				house_small_4_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
-				house_small_4_roof.position.x = -90;
+				house_small_4_roof.position.x = -50;
 				house_small_4_roof.position.y = 26;
-				house_small_4_roof.position.z = 450;
+				house_small_4_roof.position.z = 40;
 				house_small_4_roof.rotation.x = (90 * Math.PI)/180;
 				house_small_4_roof.rotation.y = (180 * Math.PI)/180;
 				house_small_4_roof.rotation.z = (90 * Math.PI)/180;
 				house_small_4_roof.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_4_roof);
 				house_small_4_door = new THREE.Mesh(house_door_geometry, house_door_material);
-				house_small_4_door.position.x = -71;
+				house_small_4_door.position.x = -32;
 				house_small_4_door.position.y = 10;
-				house_small_4_door.position.z = 435;
+				house_small_4_door.position.z = 25;
 				house_small_4_door.rotation.y = (90 * Math.PI)/180;
 				house_small_4_door.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_4_door);
 
 				// ADDING THE BIG HOUSE
 				house_big_1_walls = new THREE.Mesh(house_big_walls_geometry, house_big_walls_material);
-				house_big_1_walls.position.x = -20;
+				house_big_1_walls.position.x = 0;
 				house_big_1_walls.position.y = 11;
-				house_big_1_walls.position.z = 250;
+				house_big_1_walls.position.z = -200;
 				house_big_1_walls.rotation.x = (90 * Math.PI)/180;
 				house_big_1_walls.rotation.y = (180 * Math.PI)/180;
 				house_big_1_walls.rotation.z = (180 * Math.PI)/180;
@@ -379,18 +378,18 @@
 				scene.add(house_big_1_walls);
 				obstacles.push(house_big_1_walls);
 				house_big_1_roof = new THREE.Mesh(house_big_roof_geometry, house_big_roof_material);
-				house_big_1_roof.position.x = -20;
-				house_big_1_roof.position.y = 26;
-				house_big_1_roof.position.z = 255;
+				house_big_1_roof.position.x = 0;
+				house_big_1_roof.position.y = 28;
+				house_big_1_roof.position.z = -196;
 				house_big_1_roof.rotation.x = (90 * Math.PI)/180;
 				house_big_1_roof.rotation.y = (180 * Math.PI)/180;
 				house_big_1_roof.rotation.z = (180 * Math.PI)/180;
 				house_big_1_roof.scale.set(0.7,0.7,0.7);
 				scene.add(house_big_1_roof);
 				house_big_1_door = new THREE.Mesh(house_door_geometry, house_door_material);
-				house_big_1_door.position.x = -26;
+				house_big_1_door.position.x = -6;
 				house_big_1_door.position.y = 10;
-				house_big_1_door.position.z = 287;
+				house_big_1_door.position.z = -165;
 				house_big_1_door.rotation.z = (180 * Math.PI)/180;
 				house_big_1_door.scale.set(0.7,0.7,0.7);
 				scene.add(house_big_1_door);
@@ -412,7 +411,7 @@
 				if (keyUpPressed==true)
 					{
 					// MOVING THE HERO FORWARD
-					hero.position.z = hero.position.z - heroSpeed;
+					hero.position.z = hero.position.z - heroDistanceCheck;
 
 					// CHECKING IF THE HERO CAN MOVE
 					if (detectCollisions()==false)
@@ -431,7 +430,7 @@
 				if (keyDownPressed==true)
 					{
 					// MOVING THE HERO BACKWARDS
-					hero.position.z = hero.position.z + heroSpeed;
+					hero.position.z = hero.position.z + heroDistanceCheck;
 
 					// CHECKING IF THE HERO CAN MOVE
 					if (detectCollisions()==false)
@@ -450,7 +449,7 @@
 				if (keyLeftPressed==true)
 					{
 					// MOVING THE HERO TO THE LEFT
-					hero.position.x = hero.position.x - heroSpeed;
+					hero.position.x = hero.position.x - heroDistanceCheck;
 
 					// CHECKING IF THE HERO CAN MOVE
 					if (detectCollisions()==false)
@@ -469,7 +468,7 @@
 				if (keyRightPressed==true)
 					{
 					// MOVING THE HERO TO THE RIGHT
-					hero.position.x = hero.position.x + heroSpeed;
+					hero.position.x = hero.position.x + heroDistanceCheck;
 
 					// CHECKING IF THE HERO CAN MOVE
 					if (detectCollisions()==false)
