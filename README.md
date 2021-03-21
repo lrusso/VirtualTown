@@ -10,10 +10,8 @@ https://lrusso.github.io/VirtualTown/VirtualTown.htm
 
 ## Roadmap:
 
-* Moving freely.
-* Colliding with the houses.
-* Colliding with the water.
 * Adding virtual controls.
+* Colliding with the water.
 * Moving camera up and down while walking.
 * Improving lights.
 * Improving house textures.
