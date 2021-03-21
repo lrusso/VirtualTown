@@ -75,14 +75,15 @@
 			var hero;
 			var heroSpeed = 1.3;
 
-			var grassLeft;
-			var grassLeftGeometry;
-			var grassLeftMaterial;
+			var grassFloor;
+			var grassMaterial;
+			var grassGeometry;
 			var grassTexture;
 			var grassLoader;
 
 			var oceanFloor;
 			var oceanMaterial;
+			var oceanGeometry;
 			var oceanTexture;
 			var oceanLoader;
 
@@ -148,14 +149,14 @@
 					grassTexture.offset.set( 0, 0 );
 					grassTexture.repeat.set( 1, 10 );
 					});
-				grassLeftMaterial = new THREE.MeshPhongMaterial( { map: grassTexture } );
-				grassLeftGeometry = new THREE.BoxGeometry(200, PLANE_LENGTH + PLANE_LENGTH / 10, 1);
-				grassLeft = new THREE.Mesh(grassLeftGeometry, grassLeftMaterial);
-				grassLeft.receiveShadow = true;
-				grassLeft.rotation.x = 1.570;
-				grassLeft.position.x = -PLANE_WIDTH;
-				grassLeft.position.y = 1;
-				scene.add(grassLeft);
+				grassMaterial = new THREE.MeshPhongMaterial({map:grassTexture});
+				grassGeometry = new THREE.BoxGeometry(200, PLANE_LENGTH + PLANE_LENGTH / 10, 1);
+				grassFloor = new THREE.Mesh(grassGeometry, grassMaterial);
+				grassFloor.receiveShadow = true;
+				grassFloor.rotation.x = 1.570;
+				grassFloor.position.x = -PLANE_WIDTH;
+				grassFloor.position.y = 1;
+				scene.add(grassFloor);
 
 				// ADDING THE OCEAN
 				oceanLoader = new THREE.TextureLoader();
