@@ -547,7 +547,7 @@
 
 			window.addEventListener("load", function()
 				{
-				// HANDLING THE KEY EVENTS
+				// SETTING WHAT WILL HAPPEN WHEN THE USER IS PRESSING A KEY
 				window.addEventListener("keydown", function ()
 					{
 					if (event.keyCode === 37 || event.keyCode === 65) // LEFT KEY OR A
@@ -571,6 +571,8 @@
 						keyDownPressed = true;
 						}
 					});
+
+				// SETTING WHAT WILL HAPPEN WHEN THE USER STOPS TO PRESSING A KEY
 				window.addEventListener("keyup", function ()
 					{
 					if (event.keyCode === 37 || event.keyCode === 65) // LEFT KEY OR A
@@ -593,6 +595,16 @@
 						// SETTING THAT THE DOWN KEY IS NOT PRESSED
 						keyDownPressed = false;
 						}
+					});
+
+				// SETTING WHAT WILL HAPPEN WHEN THE WINDOW IS ON BLUR
+				window.addEventListener("blur", function ()
+					{
+					// DISABLING ANY PRESSED KEY
+					keyUpPressed = false;
+					keyDownPressed = false;
+					keyLeftPressed = false;
+					keyRightPressed = false;
 					});
 
 				// UPDATING THE ABOUT LABEL
