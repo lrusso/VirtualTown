@@ -57,6 +57,8 @@
 		</div>
 		<script src="VirtualTownGame.js"></script>
 		<script>
+			var DEBUG_MODE = false;
+
 			var containerWidth;
 			var containerHeight;
 			var scene;
@@ -395,6 +397,36 @@
 				house_big_1_door.rotation.z = (180 * Math.PI)/180;
 				house_big_1_door.scale.set(0.7,0.7,0.7);
 				scene.add(house_big_1_door);
+
+				// ADDING THE ISLAND LIMITS
+				var islandLimit1 = new THREE.Mesh(new THREE.BoxGeometry(5,15,400), new THREE.MeshBasicMaterial({color: 0x00ff00}));
+				islandLimit1.position.x = -102;
+				islandLimit1.position.y = 5;
+				islandLimit1.position.z = -90;
+				if (DEBUG_MODE==false){islandLimit1.visible = false;}
+				scene.add(islandLimit1);
+				obstacles.push(islandLimit1);
+				var islandLimit2 = new THREE.Mesh(new THREE.BoxGeometry(5,15,400), new THREE.MeshBasicMaterial({color: 0x00ff00}));
+				islandLimit2.position.x = 102;
+				islandLimit2.position.y = 5;
+				islandLimit2.position.z = -90;
+				if (DEBUG_MODE==false){islandLimit2.visible = false;}
+				scene.add(islandLimit2);
+				obstacles.push(islandLimit2);
+				var islandLimit3 = new THREE.Mesh(new THREE.BoxGeometry(209,15,5), new THREE.MeshBasicMaterial({color: 0x00ff00}));
+				islandLimit3.position.x = 0;
+				islandLimit3.position.y = 5;
+				islandLimit3.position.z = 110;
+				if (DEBUG_MODE==false){islandLimit3.visible = false;}
+				scene.add(islandLimit3);
+				obstacles.push(islandLimit3);
+				var islandLimit4 = new THREE.Mesh(new THREE.BoxGeometry(209,15,5), new THREE.MeshBasicMaterial({color: 0x00ff00}));
+				islandLimit4.position.x = 0;
+				islandLimit4.position.y = 5;
+				islandLimit4.position.z = -292;
+				if (DEBUG_MODE==false){islandLimit4.visible = false;}
+				scene.add(islandLimit4);
+				obstacles.push(islandLimit4);
 				}
 
 			function update()
