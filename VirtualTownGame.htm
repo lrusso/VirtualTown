@@ -67,7 +67,7 @@
 			var directionalLight;
 
 			var hero;
-			var heroSpeed = 1.3;
+			var heroSpeed = 3;
 			var heroDistanceCheck = 5;
 
 			var grassFloor;
@@ -399,8 +399,12 @@
 
 			function update()
 				{
-				// REQUESTING THE FRAME ANIMATION
-				requestAnimationFrame(update);
+				// SETTING A DELAY FOR PREVENTING A FASTER GAME EXPERIENCE USING NEWER DEVICES
+				setTimeout(function()
+					{
+					// REQUESTING THE FRAME ANIMATION
+					requestAnimationFrame(update);
+					},1000/30);
 
 				// MOVING THE OCEAN TEXTURE
 				oceanTexture.offset.y = oceanTexture.offset.y - 0.0002;
@@ -470,15 +474,15 @@
 				// CHECKING IF THE LEFT KEY IS PRESSED
 				if (keyLeftPressed==true)
 					{
-					camera.rotation.y = camera.rotation.y + 0.03;
-					hero.rotation.y = hero.rotation.y + 0.03;
+					camera.rotation.y = camera.rotation.y + 0.05;
+					hero.rotation.y = hero.rotation.y + 0.05;
 					}
 
 				// CHECKING IF THE RIGHT KEY IS PRESSED
 				if (keyRightPressed==true)
 					{
-					camera.rotation.y = camera.rotation.y - 0.03;
-					hero.rotation.y = hero.rotation.y - 0.03;
+					camera.rotation.y = camera.rotation.y - 0.05;
+					hero.rotation.y = hero.rotation.y - 0.05;
 					}
 
 				// RENDERING THE SCENE
