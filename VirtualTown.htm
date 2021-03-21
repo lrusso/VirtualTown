@@ -68,11 +68,15 @@
 			var containerWidth = 0;
 			var containerHeight = 0;
 			var directionalLight;
-			var globalRenderID;
 			var hemisphereLight;
 			var renderer;
 			var scene;
-			var score;
+
+			var hero;
+			var heroGeometry = new THREE.BoxGeometry( 1, 1, 1 );
+			var heroMaterial = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+
+			var obstacles = [];
 
 			var grassLeft;
 			var grassLeftGeometry;
@@ -93,21 +97,15 @@
 			var userLanguage = window.navigator.userLanguage || window.navigator.language;
 
 			var STRING_ABOUT = "";
-			var STRING_HIGH = "";
-			var STRING_SCORE = "";
 
 			// CHECKING THE USER LANGUAGE
 			if (userLanguage.substring(0,2)=="es")
 				{
 				STRING_ABOUT = "Dise&ntilde;ado por www.lrusso.com";
-				STRING_HIGH = "RECORD";
-				STRING_SCORE = "PUNTAJE";
 				}
 				else
 				{
 				STRING_ABOUT = "Designed by www.lrusso.com";
-				STRING_HIGH = "BEST";
-				STRING_SCORE = "SCORE";
 				}
 
 			function render()
@@ -115,25 +113,62 @@
 				requestAnimationFrame(render);
 
 				oceanTexture.offset.y -= .0002;
+				hero.position.x = camera.position.x;
+				hero.position.z = camera.position.z;
 
 				if (keyUpPressed==true)
 					{
-					camera.position.z = camera.position.z - 5;
+					hero.position.z = hero.position.z - 1.5;
+					if (detectCollisions()==false)
+						{
+						camera.position.z = camera.position.z - 1.5;
+						}
+						else
+						{
+						hero.position.z = hero.position.z + 1.5;
+						}
 					}
 
 				if (keyDownPressed==true)
 					{
-					camera.position.z = camera.position.z + 5;
+					hero.position.z = hero.position.z + 1.5;
+
+					if (detectCollisions()==false)
+						{
+						camera.position.z = camera.position.z + 1.5;
+						}
+						else
+						{
+						hero.position.z = hero.position.z - 1.5;
+						}
 					}
 
 				if (keyLeftPressed==true)
 					{
-					camera.position.x = camera.position.x - 5;
+					hero.position.x = hero.position.x - 1.5;
+
+					if (detectCollisions()==false)
+						{
+						camera.position.x = camera.position.x - 1.5;
+						}
+						else
+						{
+						hero.position.x = hero.position.x + 1.5;
+						}
 					}
 
 				if (keyRightPressed==true)
 					{
-					camera.position.x = camera.position.x + 5;
+					hero.position.x = hero.position.x + 1.5;
+
+					if (detectCollisions()==false)
+						{
+						camera.position.x = camera.position.x + 1.5;
+						}
+						else
+						{
+						hero.position.x = hero.position.x - 1.5;
+						}
 					}
 
 				renderer.render(scene, camera);
@@ -165,6 +200,11 @@
 				camera = new THREE.PerspectiveCamera(45, containerWidth / containerHeight, 1, 3000);
 				camera.position.set(-10, 10, 530);
 				scene.add(camera);
+
+				hero = new THREE.Mesh(heroGeometry, heroMaterial);
+				hero.position.y = 10;
+				hero.visible = false;
+				scene.add(hero);
 
 				// ADDING THE GRASS FLOOR
 				grassLoader = new THREE.TextureLoader();
@@ -290,6 +330,7 @@
 				house_small_1_walls.rotation.z = (90 * Math.PI)/180;
 				house_small_1_walls.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_1_walls);
+				obstacles.push(house_small_1_walls);
 				house_small_1_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
 				house_small_1_roof.position.x = 50;
 				house_small_1_roof.position.y = 26;
@@ -317,6 +358,7 @@
 				house_small_2_walls.rotation.z = (90 * Math.PI)/180;
 				house_small_2_walls.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_2_walls);
+				obstacles.push(house_small_2_walls);
 				house_small_2_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
 				house_small_2_roof.position.x = 50;
 				house_small_2_roof.position.y = 26;
@@ -344,6 +386,7 @@
 				house_small_3_walls.rotation.z = (270 * Math.PI)/180;
 				house_small_3_walls.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_3_walls);
+				obstacles.push(house_small_3_walls);
 				house_small_3_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
 				house_small_3_roof.position.x = -90;
 				house_small_3_roof.position.y = 26;
@@ -371,6 +414,7 @@
 				house_small_4_walls.rotation.z = (270 * Math.PI)/180;
 				house_small_4_walls.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_4_walls);
+				obstacles.push(house_small_4_walls);
 				house_small_4_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
 				house_small_4_roof.position.x = -90;
 				house_small_4_roof.position.y = 26;
@@ -398,6 +442,7 @@
 				house_big_1_walls.rotation.z = (180 * Math.PI)/180;
 				house_big_1_walls.scale.set(0.7,0.7,0.7);
 				scene.add(house_big_1_walls);
+				obstacles.push(house_big_1_walls);
 				house_big_1_roof = new THREE.Mesh(house_big_roof_geometry, house_big_roof_material);
 				house_big_1_roof.position.x = -20;
 				house_big_1_roof.position.y = 26;
@@ -414,6 +459,29 @@
 				house_big_1_door.rotation.z = (180 * Math.PI)/180;
 				house_big_1_door.scale.set(0.7,0.7,0.7);
 				scene.add(house_big_1_door);
+				}
+
+			function detectCollisions()
+				{
+				// LOOPING ALL THE OBSTACLES
+				for (var i = 0; i < obstacles.length; i ++)
+					{
+					// CREATING A BOX ARROUND THE HERO CURRENT POSITION
+					var heroMeshBox = new THREE.Box3().setFromObject(hero);
+
+					// CREATING A BOX ARROUND THE OBSTACLE CURRENT POSITION
+					var obstacleMeshBox = new THREE.Box3().setFromObject(obstacles[i]);
+
+					// CHECKING IF THERE IS AN INTERSECTION BETWEEN TWO BOXES
+					if (heroMeshBox.intersectsBox(obstacleMeshBox)==true)
+						{
+						// RETURNING THAT THERE IS A COLLISION BETWEEN THE HERO AND THE OBSTACLE
+						return true;
+						}
+					}
+
+				// RETURNING THAT THERE IS NO COLLISION
+				return false;
 				}
 
 			function resizeCanvasToFitWindow()
