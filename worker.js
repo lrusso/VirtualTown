@@ -1,11 +1,12 @@
 const filesToCache = [
 	"VirtualTown.htm",
-	"VirtualTown.js",
 	"VirtualTown.json",
 	"VirtualTown.png",
 	"VirtualTownFavIcon_16x16.png",
 	"VirtualTownFavIcon_192x192.png",
 	"VirtualTownFavIcon_512x512.png",
+	"VirtualTownGame.htm",
+	"VirtualTownGame.js",
 	"VirtualTownShare.png"
 ];
 
