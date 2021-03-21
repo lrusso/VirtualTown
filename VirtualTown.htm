@@ -166,7 +166,7 @@
 					oceanTexture.repeat.set(10,10);
 					});
 				oceanMaterial = new THREE.MeshPhongMaterial( { map: oceanTexture } );
-				oceanGeometry = new THREE.BoxGeometry(300, 500);
+				oceanGeometry = new THREE.BoxGeometry(10000, 10000);
 				oceanFloor = new THREE.Mesh(oceanGeometry, oceanMaterial);
 				oceanFloor.receiveShadow = true;
 				oceanFloor.rotation.x = 1.570;
@@ -403,7 +403,7 @@
 				requestAnimationFrame(update);
 
 				// MOVING THE OCEAN TEXTURE
-				oceanTexture.offset.y -= .0002;
+				oceanTexture.offset.y = oceanTexture.offset.y - 0.0002;
 
 				// MAKING THE HERO TO FOLLOW THE CAMERA
 				hero.position.x = camera.position.x;
