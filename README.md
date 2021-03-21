@@ -14,7 +14,6 @@ https://github.com/lrusso/VirtualJoystick
 
 ## Roadmap:
 
-* Adding virtual controls.
 * Colliding with the water.
 * Moving camera up and down while walking.
 * Improving lights.
