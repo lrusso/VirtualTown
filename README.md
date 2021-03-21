@@ -25,4 +25,4 @@ https://lrusso.github.io/VirtualTown/VirtualTown.htm
 * Adding open door sound.
 * Adding walking sound (over grass or wood).
 * Adding background music (ocean or jungle music).
-* Adding bots walking in the island.
+* Adding bots walking on the island.
