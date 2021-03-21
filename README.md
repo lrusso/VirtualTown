@@ -14,7 +14,6 @@ https://github.com/lrusso/VirtualJoystick
 
 ## Roadmap:
 
-* Colliding with the water.
 * Moving camera up and down while walking.
 * Improving lights.
 * Improving house textures.
