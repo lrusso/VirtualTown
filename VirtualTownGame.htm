@@ -21,6 +21,8 @@
 				.virtual-town-about-label{font-size:18px;margin-bottom:10px}
 				}
 
+			#virtual-town-joystick{position:fixed;left:0;bottom:0;width:235px;height:265px}
+
 			.virtual-town-pleasewait{position:fixed;width:64px;height:64px;left:0;right:0;top:0;bottom:0;margin:auto auto;border:0}
 			.virtual-town-pleasewait-spinner{color:white;display:inline-block;position:relative;width:64px;height:64px}
 			.virtual-town-pleasewait-spinner div{transform-origin:32px 32px;animation:virtual-town-pleasewait-spinner 1.2s linear infinite}
@@ -45,6 +47,7 @@
 		<div class="virtual-town-container"></div>
 		<div class="virtual-town-about-label" id="about"></div>
 		<div class="virtual-town-pleasewait"><div class="virtual-town-pleasewait-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
+		<div id="virtual-town-joystick"></div>
 		<script src="VirtualTownGame.js"></script>
 		<script>
 			var containerWidth;
@@ -592,6 +595,82 @@
 					keyLeftPressed = false;
 					keyRightPressed = false;
 					});
+
+				// CHECKING IF IT IS A MOBILE DEVICE
+				if (isMobileDevice()==true)
+					{
+					var joystick = new JoyStick("virtual-town-joystick");
+
+					setInterval(function()
+						{
+						var joystickDirection = joystick.GetDir();
+						switch(joystickDirection)
+							{
+							case "N":
+							keyUpPressed = true;
+							keyDownPressed = false;
+							keyLeftPressed = false;
+							keyRightPressed = false;
+							break;
+
+							case "S":
+							keyUpPressed = false;
+							keyDownPressed = true;
+							keyLeftPressed = false;
+							keyRightPressed = false;
+							break;
+
+							case "W":
+							keyUpPressed = false;
+							keyDownPressed = false;
+							keyLeftPressed = true;
+							keyRightPressed = false;
+							break;
+
+							case "E":
+							keyUpPressed = false;
+							keyDownPressed = false;
+							keyLeftPressed = false;
+							keyRightPressed = true;
+							break;
+
+							case "NW":
+							keyUpPressed = true;
+							keyDownPressed = false;
+							keyLeftPressed = true;
+							keyRightPressed = false;
+							break;
+
+							case "NE":
+							keyUpPressed = true;
+							keyDownPressed = false;
+							keyLeftPressed = false;
+							keyRightPressed = true;
+							break;
+
+							case "SE":
+							keyUpPressed = false;
+							keyDownPressed = true;
+							keyLeftPressed = false;
+							keyRightPressed = true;
+							break;
+
+							case "SW":
+							keyUpPressed = false;
+							keyDownPressed = true;
+							keyLeftPressed = true;
+							keyRightPressed = false;
+							break;
+
+							default:
+							keyUpPressed = false;
+							keyDownPressed = false;
+							keyLeftPressed = false;
+							keyRightPressed = false;
+							break;
+							}
+						}, 25);
+					}
 
 				// UPDATING THE ABOUT LABEL
 				document.getElementById("about").innerHTML = STRING_ABOUT;
