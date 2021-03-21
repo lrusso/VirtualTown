@@ -85,6 +85,11 @@
 			var oceanTexture;
 			var oceanLoader;
 
+			var keyUpPressed = false;
+			var keyDownPressed = false;
+			var keyLeftPressed = false;
+			var keyRightPressed = false;
+
 			var userLanguage = window.navigator.userLanguage || window.navigator.language;
 
 			var STRING_ABOUT = "";
@@ -110,6 +115,26 @@
 				requestAnimationFrame(render);
 
 				oceanTexture.offset.y -= .0002;
+
+				if (keyUpPressed==true)
+					{
+					camera.position.z = camera.position.z - 5;
+					}
+
+				if (keyDownPressed==true)
+					{
+					camera.position.z = camera.position.z + 5;
+					}
+
+				if (keyLeftPressed==true)
+					{
+					camera.position.x = camera.position.x - 5;
+					}
+
+				if (keyRightPressed==true)
+					{
+					camera.position.x = camera.position.x + 5;
+					}
 
 				renderer.render(scene, camera);
 				}
@@ -255,13 +280,6 @@
 				house_window_geometry.computeVertexNormals();
 				house_window_geometry.center();
 
-
-
-
-
-
-
-
 				// ADDING THE FIRST HOUSE
 				house_small_1_walls = new THREE.Mesh(house_small_walls_geometry, house_small_walls_material);
 				house_small_1_walls.position.x = 50;
@@ -272,7 +290,6 @@
 				house_small_1_walls.rotation.z = (90 * Math.PI)/180;
 				house_small_1_walls.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_1_walls);
-
 				house_small_1_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
 				house_small_1_roof.position.x = 50;
 				house_small_1_roof.position.y = 26;
@@ -282,7 +299,6 @@
 				house_small_1_roof.rotation.z = (90 * Math.PI)/180;
 				house_small_1_roof.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_1_roof);
-
 				house_small_1_door = new THREE.Mesh(house_door_geometry, house_door_material);
 				house_small_1_door.position.x = 31;
 				house_small_1_door.position.y = 10;
@@ -290,13 +306,6 @@
 				house_small_1_door.rotation.y = (270 * Math.PI)/180;
 				house_small_1_door.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_1_door);
-
-
-
-
-
-
-
 
 				// ADDING THE SECOND HOUSE
 				house_small_2_walls = new THREE.Mesh(house_small_walls_geometry, house_small_walls_material);
@@ -308,7 +317,6 @@
 				house_small_2_walls.rotation.z = (90 * Math.PI)/180;
 				house_small_2_walls.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_2_walls);
-
 				house_small_2_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
 				house_small_2_roof.position.x = 50;
 				house_small_2_roof.position.y = 26;
@@ -318,7 +326,6 @@
 				house_small_2_roof.rotation.z = (90 * Math.PI)/180;
 				house_small_2_roof.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_2_roof);
-
 				house_small_2_door = new THREE.Mesh(house_door_geometry, house_door_material);
 				house_small_2_door.position.x = 31;
 				house_small_2_door.position.y = 10;
@@ -326,14 +333,6 @@
 				house_small_2_door.rotation.y = (270 * Math.PI)/180;
 				house_small_2_door.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_2_door);
-
-
-
-
-
-
-
-
 
 				// ADDING THE TIRTH HOUSE
 				house_small_3_walls = new THREE.Mesh(house_small_walls_geometry, house_small_walls_material);
@@ -345,7 +344,6 @@
 				house_small_3_walls.rotation.z = (270 * Math.PI)/180;
 				house_small_3_walls.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_3_walls);
-
 				house_small_3_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
 				house_small_3_roof.position.x = -90;
 				house_small_3_roof.position.y = 26;
@@ -355,7 +353,6 @@
 				house_small_3_roof.rotation.z = (90 * Math.PI)/180;
 				house_small_3_roof.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_3_roof);
-
 				house_small_3_door = new THREE.Mesh(house_door_geometry, house_door_material);
 				house_small_3_door.position.x = -71;
 				house_small_3_door.position.y = 10;
@@ -363,17 +360,6 @@
 				house_small_3_door.rotation.y = (90 * Math.PI)/180;
 				house_small_3_door.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_3_door);
-
-
-
-
-
-
-
-
-
-
-
 
 				// ADDING THE FOURTH HOUSE
 				house_small_4_walls = new THREE.Mesh(house_small_walls_geometry, house_small_walls_material);
@@ -385,7 +371,6 @@
 				house_small_4_walls.rotation.z = (270 * Math.PI)/180;
 				house_small_4_walls.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_4_walls);
-
 				house_small_4_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
 				house_small_4_roof.position.x = -90;
 				house_small_4_roof.position.y = 26;
@@ -395,7 +380,6 @@
 				house_small_4_roof.rotation.z = (90 * Math.PI)/180;
 				house_small_4_roof.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_4_roof);
-
 				house_small_4_door = new THREE.Mesh(house_door_geometry, house_door_material);
 				house_small_4_door.position.x = -71;
 				house_small_4_door.position.y = 10;
@@ -403,11 +387,6 @@
 				house_small_4_door.rotation.y = (90 * Math.PI)/180;
 				house_small_4_door.scale.set(0.7,0.7,0.7);
 				scene.add(house_small_4_door);
-
-
-
-
-
 
 				// ADDING THE BIG HOUSE
 				house_big_1_walls = new THREE.Mesh(house_big_walls_geometry, house_big_walls_material);
@@ -419,7 +398,6 @@
 				house_big_1_walls.rotation.z = (180 * Math.PI)/180;
 				house_big_1_walls.scale.set(0.7,0.7,0.7);
 				scene.add(house_big_1_walls);
-
 				house_big_1_roof = new THREE.Mesh(house_big_roof_geometry, house_big_roof_material);
 				house_big_1_roof.position.x = -20;
 				house_big_1_roof.position.y = 26;
@@ -429,7 +407,6 @@
 				house_big_1_roof.rotation.z = (180 * Math.PI)/180;
 				house_big_1_roof.scale.set(0.7,0.7,0.7);
 				scene.add(house_big_1_roof);
-
 				house_big_1_door = new THREE.Mesh(house_door_geometry, house_door_material);
 				house_big_1_door.position.x = -26;
 				house_big_1_door.position.y = 10;
@@ -437,26 +414,6 @@
 				house_big_1_door.rotation.z = (180 * Math.PI)/180;
 				house_big_1_door.scale.set(0.7,0.7,0.7);
 				scene.add(house_big_1_door);
-				}
-
-			function moveLeft()
-				{
-				camera.position.x = camera.position.x - 10;
-				}
-
-			function moveRight()
-				{
-				camera.position.x = camera.position.x + 10;
-				}
-
-			function moveForward()
-				{
-				camera.position.z = camera.position.z - 10;
-				}
-
-			function moveBackwards()
-				{
-				camera.position.z = camera.position.z + 10;
 				}
 
 			function resizeCanvasToFitWindow()
@@ -502,34 +459,42 @@
 					{
 					if (event.keyCode === 37 || event.keyCode === 65) // LEFT KEY OR A
 						{
-						// MOVING THE HERO TO THE LEFT
-						moveLeft();
+						keyLeftPressed = true;
 						}
 					else if (event.keyCode === 39 || event.keyCode === 68) // RIGHT KEY OR D
 						{
-						// MOVING THE HERO TO THE RIGHT
-						moveRight();
+						keyRightPressed = true;
 						}
 					else if (event.keyCode === 38 || event.keyCode === 87) // RIGHT KEY OR W
 						{
-						// MOVING THE HERO FORWARD
-						moveForward();
+						keyUpPressed = true;
 						}
 					else if (event.keyCode === 40 || event.keyCode === 83) // RIGHT KEY OR S
 						{
-						// MOVING THE HERO BACKWARDS
-						moveBackwards();
-						}
-					else if (event.keyCode === 32)
-						{
-						// CHECKING IF THE GAME IS OVER
-						if (document.getElementsByClassName("virtual-town-gameover-background")[0].style.display === "block")
-							{
-							// RESTARTING THE GAME
-							startGame();
-							}
+						keyDownPressed = true;
 						}
 					});
+				window.addEventListener("keyup", function ()
+					{
+					if (event.keyCode === 37 || event.keyCode === 65) // LEFT KEY OR A
+						{
+						keyLeftPressed = false;
+						}
+					else if (event.keyCode === 39 || event.keyCode === 68) // RIGHT KEY OR D
+						{
+						keyRightPressed = false;
+						}
+					else if (event.keyCode === 38 || event.keyCode === 87) // RIGHT KEY OR W
+						{
+						keyUpPressed = false;
+						}
+					else if (event.keyCode === 40 || event.keyCode === 83) // RIGHT KEY OR S
+						{
+						keyDownPressed = false;
+						}
+					});
+
+				// UPDATING THE ABOUT LABEL
 				document.getElementById("about").innerHTML = STRING_ABOUT;
 
 				// HIDING THE LOADING SPLASH
