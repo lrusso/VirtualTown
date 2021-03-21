@@ -599,11 +599,16 @@
 				// CHECKING IF IT IS A MOBILE DEVICE
 				if (isMobileDevice()==true)
 					{
+					// CREATING THE VIRTUAL JOYSTICK
 					var joystick = new JoyStick("virtual-town-joystick");
 
+					// HANDLING THE VIRTUAL JOYSTICK
 					setInterval(function()
 						{
+						// GETTING THE JOYSTICK DIRECTION
 						var joystickDirection = joystick.GetDir();
+
+						// CHECKING THE JOYSTICK DIRECTION
 						switch(joystickDirection)
 							{
 							case "N":
