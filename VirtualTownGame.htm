@@ -91,6 +91,7 @@
 			var keyDownPressed = false;
 			var keyLeftPressed = false;
 			var keyRightPressed = false;
+			var keySpacePressed = false;
 
 			var userLanguage = window.navigator.userLanguage || window.navigator.language;
 
@@ -500,6 +501,16 @@
 					hero.rotation.y = hero.rotation.y - 0.05;
 					}
 
+				// CHECKING IF THE SPACE KEY IS PRESSED
+				if (keySpacePressed==true)
+					{
+					// MAKING THE HERO TO EXECUTE AN ACTION
+					heroAction();
+
+					// SETTING THAT SPACE KEY IS NOT PRESSED
+					keySpacePressed = false;
+					}
+
 				// RENDERING THE SCENE
 				renderer.render(scene, camera);
 				}
@@ -525,6 +536,11 @@
 
 				// RETURNING THAT THERE IS NO COLLISION
 				return false;
+				}
+
+			function heroAction()
+				{
+				// TODO
 				}
 
 			function resizeCanvasToFitWindow()
@@ -585,6 +601,11 @@
 						// SETTING THAT THE DOWN KEY IS PRESSED
 						keyDownPressed = true;
 						}
+					else if (event.keyCode === 32) // SPACE KEY
+						{
+						// SETTING THAT THE SPACE KEY IS PRESSED
+						keySpacePressed = true;
+						}
 					});
 
 				// SETTING WHAT WILL HAPPEN WHEN THE USER STOPS TO PRESSING A KEY
@@ -610,6 +631,11 @@
 						// SETTING THAT THE DOWN KEY IS NOT PRESSED
 						keyDownPressed = false;
 						}
+					else if (event.keyCode === 32) // SPACE KEY
+						{
+						// SETTING THAT THE SPACE KEY IS NOT PRESSED
+						keySpacePressed = false;
+						}
 					});
 
 				// SETTING WHAT WILL HAPPEN WHEN THE WINDOW IS ON BLUR
@@ -622,14 +648,24 @@
 					keyRightPressed = false;
 					});
 
+				// SETTING WHAT WILL HAPPEN WHEN THE USER TOUCHES THE JOYSTICK BUTTON
 				document.getElementsByClassName("virtual-town-joystick-button")[0].addEventListener("touchstart", function ()
 					{
+					// UPDATING THE JOYSTICK BUTTON IMAGE TO PRESSED
 					document.getElementById("virtual-town-joystick-button-state").className = "virtual-town-joystick-button-image virtual-town-joystick-button-pressed";
+
+					// SETTING THAT THE SPACE KEY IS PRESSED
+					keySpacePressed = true;
 					});
 
+				// SETTING WHAT WILL HAPPEN WHEN THE USER STOPS TOUCHING THE JOYSTICK BUTTON
 				document.getElementsByClassName("virtual-town-joystick-button")[0].addEventListener("touchend", function ()
 					{
+					// UPDATING THE JOYSTICK BUTTON IMAGE TO NORMAL
 					document.getElementById("virtual-town-joystick-button-state").className = "virtual-town-joystick-button-image virtual-town-joystick-button-normal";
+
+					// SETTING THAT THE SPACE KEY IS NOT PRESSED
+					keySpacePressed = false;
 					});
 
 				// CHECKING IF IT IS A MOBILE DEVICE
