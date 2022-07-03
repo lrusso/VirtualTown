@@ -145,7 +145,8 @@
 
 				// ADDING THE CAMERA
 				camera = new THREE.PerspectiveCamera(45, containerWidth / containerHeight, 1, 3000);
-				camera.position.set(0, 11, 72);
+				camera.position.set(22, 11, 62);
+				camera.rotation.y = 0.39;
 				scene.add(camera);
 
 				// ADDING A VECTOR IN ORDER TO USE IT FOR THE CAMERA DIRECTION
@@ -408,7 +409,7 @@
 				// LOADING THE ROOF MODEL
 				new THREE.OBJLoader().setMaterials(town_materials).load(OBJ_ROOF, function(object)
 					{
-					object.scale.set(20,13,13);
+					object.scale.set(21,13,13);
 					town_roof = object;
 					checkAssets();
 					});
@@ -490,12 +491,19 @@
 				createWall(-71, 65, -90);
 				createWall(-71, 75, -90);
 
-				createRoof(-40, 17,0);
-				createRoof(-40, 30,0);
-				createRoof(-40, 43,0);
-				createRoof(-40, 55,0);
-				createRoof(-40, 67,0);
-				createRoof(-40, 77,0);
+				createRoof(-40.5, 17,0);
+				createRoof(-40.5, 30,0);
+				createRoof(-40.5, 43,0);
+				createRoof(-40.5, 55,0);
+				createRoof(-40.5, 67,0);
+				createRoof(-40.5, 77,0);
+
+				createRoof(-61.5, 17,-180);
+				createRoof(-61.5, 30,-180);
+				createRoof(-61.5, 43,-180);
+				createRoof(-61.5, 55,-180);
+				createRoof(-61.5, 67,-180);
+				createRoof(-61.5, 77,-180);
 
 				// CREATING THE HOUSE 2
 				createDoor(35, 25, -180);
@@ -556,11 +564,17 @@
 				createWall(-71, -60, -90);
 				createWall(-71, -65, -90);
 
-				createRoof(-40, -17,0);
-				createRoof(-40, -30,0);
-				createRoof(-40, -43,0);
-				createRoof(-40, -55,0);
-				createRoof(-40, -65,0);
+				createRoof(-40.5, -17,0);
+				createRoof(-40.5, -30,0);
+				createRoof(-40.5, -43,0);
+				createRoof(-40.5, -55,0);
+				createRoof(-40.5, -65,0);
+
+				createRoof(-61.5, -17,-180);
+				createRoof(-61.5, -30,-180);
+				createRoof(-61.5, -43,-180);
+				createRoof(-61.5, -55,-180);
+				createRoof(-61.5, -65,-180);
 
 				// CREATING THE HOUSE 4
 				createDoor(35, -55, -180);
