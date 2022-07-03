@@ -105,9 +105,10 @@
 			var town_lamp = null;
 			var town_door = null;
 			var town_wall = null;
+			var town_roof = null;
 			var town_window = null;
 
-			var assets_limit = 7;
+			var assets_limit = 8;
 			var assets_counter = 0;
 
 			// CHECKING THE USER LANGUAGE
@@ -243,9 +244,6 @@
 					// LOADING ALL THE TOWN MODELS
 					loadModels();
 					});
-
-				// UPDATING THE SCENE
-				update();
 				}
 
 			function update()
@@ -407,6 +405,14 @@
 					checkAssets();
 					});
 
+				// LOADING THE ROOF MODEL
+				new THREE.OBJLoader().setMaterials(town_materials).load(OBJ_ROOF, function(object)
+					{
+					object.scale.set(20,13,13);
+					town_roof = object;
+					checkAssets();
+					});
+
 				// LOADING THE WINDOW MODEL
 				new THREE.OBJLoader().setMaterials(town_materials).load(OBJ_WINDOW, function(object)
 					{
@@ -484,6 +490,13 @@
 				createWall(-71, 65, -90);
 				createWall(-71, 75, -90);
 
+				createRoof(-40, 17,0);
+				createRoof(-40, 30,0);
+				createRoof(-40, 43,0);
+				createRoof(-40, 55,0);
+				createRoof(-40, 67,0);
+				createRoof(-40, 77,0);
+
 				// CREATING THE HOUSE 2
 				createDoor(35, 25, -180);
 				createWall(31, 20, -90);
@@ -511,6 +524,13 @@
 				createWall(71, 65, -90);
 				createWall(71, 75, -90);
 
+				createRoof(40, 17,-180);
+				createRoof(40, 30,-180);
+				createRoof(40, 43,-180);
+				createRoof(40, 55,-180);
+				createRoof(40, 67,-180);
+				createRoof(40, 77,-180);
+
 				// CREATING THE HOUSE 3
 				createDoor(-35, -55, 0);
 				createWall(-31, -20, -90);
@@ -536,6 +556,12 @@
 				createWall(-71, -60, -90);
 				createWall(-71, -65, -90);
 
+				createRoof(-40, -17,0);
+				createRoof(-40, -30,0);
+				createRoof(-40, -43,0);
+				createRoof(-40, -55,0);
+				createRoof(-40, -65,0);
+
 				// CREATING THE HOUSE 4
 				createDoor(35, -55, -180);
 				createWall(31, -20, -90);
@@ -560,6 +586,15 @@
 				createWall(71, -45, -90);
 				createWall(71, -55, -90);
 				createWall(71, -65, -90);
+
+				createRoof(40, -17,-180);
+				createRoof(40, -30,-180);
+				createRoof(40, -43,-180);
+				createRoof(40, -55,-180);
+				createRoof(40, -67,-180);
+
+				// UPDATING THE SCENE
+				update();
 				}
 
 			function createRoadBlock(x,z)
@@ -637,6 +672,16 @@
 				newObj.position.y = 1;
 				newObj.position.z = z;
 				obstacles.push(newObj);
+				scene.add(newObj);
+				}
+
+			function createRoof(x,z,rotation)
+				{
+				var newObj = town_roof.clone();
+				newObj.rotation.y = (rotation * Math.PI)/180;
+				newObj.position.x = x;
+				newObj.position.y = 24.5;
+				newObj.position.z = z;
 				scene.add(newObj);
 				}
 
