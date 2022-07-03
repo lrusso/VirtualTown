@@ -144,7 +144,7 @@
 
 				// ADDING THE CAMERA
 				camera = new THREE.PerspectiveCamera(45, containerWidth / containerHeight, 1, 3000);
-				camera.position.set(0, 11, 102);
+				camera.position.set(0, 11, 72);
 				scene.add(camera);
 
 				// ADDING A VECTOR IN ORDER TO USE IT FOR THE CAMERA DIRECTION
@@ -243,6 +243,8 @@
 					// LOADING ALL THE TOWN MODELS
 					loadModels();
 					});
+
+				update();
 				}
 
 			function update()
@@ -649,9 +651,6 @@
 					}
 				}
 
-			// CREATING THE SCENE
-			create();
-
 			window.oncontextmenu = function()
 				{
 				// DISABLING THE CONTEXT MENU
@@ -666,6 +665,25 @@
 
 			window.addEventListener("load", function()
 				{
+				// CREATING THE SCENE
+				create();
+
+				// WAITING 25 MS FOR THE UI TO BE UPDATED
+				setTimeout(function()
+					{
+					// ADDING THE SKY
+					var canvas = document.createElement("canvas");
+					canvas.width = 32;
+					canvas.height = window.innerHeight;
+					var gradient = canvas.getContext("2d").createLinearGradient(0,0,0,canvas.height);
+					gradient.addColorStop(0,"#1e4877");
+					gradient.addColorStop(0.5,"#4584b4");
+					canvas.getContext("2d").fillStyle = gradient;
+					canvas.getContext("2d").fillRect(0, 0, canvas.width, canvas.height);
+					document.getElementsByClassName("virtual-town-container")[0].style.background = "url(" + canvas.toDataURL("image/png") + ")";
+					document.getElementsByClassName("virtual-town-container")[0].style.backgroundSize = "32px 100%";
+					},25);
+
 				// SETTING WHAT WILL HAPPEN WHEN THE USER IS PRESSING A KEY
 				window.addEventListener("keydown", function ()
 					{
@@ -858,9 +876,6 @@
 
 				// SHOWING THE ABOUT BOX
 				document.getElementById("about").style.display = "block";
-
-				// UPDATING THE SCENE
-				update();
 
 				// RESIZING THE CANVAS TO FIT THE WINDOW
 				resizeCanvasToFitWindow();
