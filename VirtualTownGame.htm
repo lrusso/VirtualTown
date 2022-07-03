@@ -68,6 +68,7 @@
 			var hemisphereLight;
 			var directionalLight1;
 			var directionalLight2;
+			var waterWell = null;
 
 			var hero;
 			var heroSpeed = 3;
@@ -96,6 +97,18 @@
 			var userLanguage = window.navigator.userLanguage || window.navigator.language;
 
 			var STRING_ABOUT = "";
+
+			var town_materials = null;
+			var town_road = null;
+			var town_well = null;
+			var town_water_well = null;
+			var town_lamp = null;
+			var town_door = null;
+			var town_wall = null;
+			var town_window = null;
+
+			var assets_limit = 7;
+			var assets_counter = 0;
 
 			// CHECKING THE USER LANGUAGE
 			if (userLanguage.substring(0,2)=="es")
@@ -131,7 +144,7 @@
 
 				// ADDING THE CAMERA
 				camera = new THREE.PerspectiveCamera(45, containerWidth / containerHeight, 1, 3000);
-				camera.position.set(0, 11, 10);
+				camera.position.set(0, 11, 102);
 				scene.add(camera);
 
 				// ADDING A VECTOR IN ORDER TO USE IT FOR THE CAMERA DIRECTION
@@ -175,212 +188,18 @@
 				oceanFloor.receiveShadow = true;
 				oceanFloor.rotation.x = 1.570;
 				oceanFloor.position.x = 0;
-				oceanFloor.position.y = -1;
+				oceanFloor.position.y = -20;
 				oceanFloor.position.z = -90;
 				scene.add(oceanFloor);
 
 				// ADDING THE LIGHTS
-				directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.45);
+				directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.15);
 				directionalLight1.position.set(-60, 99, 0);
-				directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.45);
+				directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.15);
 				directionalLight2.position.set(60, 99, 0);
-				hemisphereLight = new THREE.HemisphereLight(0xFFB74D, 0x37474F, 1);
+				hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x000000, 1);
 				hemisphereLight.position.y = 500;
 				scene.add(directionalLight1,directionalLight2,hemisphereLight);
-
-				// ADDING THE SKY
-				var canvas = document.createElement("canvas");
-				canvas.width = 32;
-				canvas.height = window.innerHeight;
-				var gradient = canvas.getContext("2d").createLinearGradient(0,0,0,canvas.height);
-				gradient.addColorStop(0,"#1e4877");
-				gradient.addColorStop(0.5,"#4584b4");
-				canvas.getContext("2d").fillStyle = gradient;
-				canvas.getContext("2d").fillRect(0, 0, canvas.width, canvas.height);
-				document.getElementsByClassName("virtual-town-container")[0].style.background = "url(" + canvas.toDataURL("image/png") + ")";
-				document.getElementsByClassName("virtual-town-container")[0].style.backgroundSize = "32px 100%";
-
-				// LOADING HOUSE SMALL WALLS MODEL
-				house_small_walls_material = new THREE.MeshLambertMaterial({ color: 0xCECECE, flatShading: THREE.FlatShading, opacity: 0.7 });
-				house_small_walls_geometry = new THREE.STLLoader().parse(house_small_walls);
-				house_small_walls_geometry.computeFaceNormals();
-				house_small_walls_geometry.computeVertexNormals();
-				house_small_walls_geometry.center();
-
-				// LOADING HOUSE SMALL ROOF MODEL
-				house_small_roof_material = new THREE.MeshLambertMaterial({ color: 0x8b0000, flatShading: THREE.FlatShading, opacity: 0.7 });
-				house_small_roof_geometry = new THREE.STLLoader().parse(house_small_roof);
-				house_small_roof_geometry.computeFaceNormals();
-				house_small_roof_geometry.computeVertexNormals();
-				house_small_roof_geometry.center();
-
-				// LOADING HOUSE BIG WALLS MODEL
-				house_big_walls_material = new THREE.MeshLambertMaterial({ color: 0xCECECE, flatShading: THREE.FlatShading, opacity: 0.7 });
-				house_big_walls_geometry = new THREE.STLLoader().parse(house_big_walls);
-				house_big_walls_geometry.computeFaceNormals();
-				house_big_walls_geometry.computeVertexNormals();
-				house_big_walls_geometry.center();
-
-				// LOADING HOUSE BIG ROOF MODEL
-				house_big_roof_material = new THREE.MeshLambertMaterial({ color: 0x8b0000, flatShading: THREE.FlatShading, opacity: 0.7 });
-				house_big_roof_geometry = new THREE.STLLoader().parse(house_big_roof);
-				house_big_roof_geometry.computeFaceNormals();
-				house_big_roof_geometry.computeVertexNormals();
-				house_big_roof_geometry.center();
-
-				// LOADING HOUSE DOOR MODEL
-				house_door_material = new THREE.MeshLambertMaterial({ color: 0x964B00, flatShading: THREE.FlatShading, opacity: 0.7 });
-				house_door_geometry = new THREE.STLLoader().parse(house_door);
-				house_door_geometry.computeFaceNormals();
-				house_door_geometry.computeVertexNormals();
-				house_door_geometry.center();
-
-				// LOADING HOUSE WINDOW MODEL
-				house_window_material = new THREE.MeshLambertMaterial({ color: 0x8b0000, flatShading: THREE.FlatShading, opacity: 0.7 });
-				house_window_geometry = new THREE.STLLoader().parse(house_window);
-				house_window_geometry.computeFaceNormals();
-				house_window_geometry.computeVertexNormals();
-				house_window_geometry.center();
-
-				// ADDING THE FIRST HOUSE
-				house_small_1_walls = new THREE.Mesh(house_small_walls_geometry, house_small_walls_material);
-				house_small_1_walls.position.x = 50;
-				house_small_1_walls.position.y = 11;
-				house_small_1_walls.position.z = -70;
-				house_small_1_walls.rotation.x = (90 * Math.PI)/180;
-				house_small_1_walls.rotation.y = (180 * Math.PI)/180;
-				house_small_1_walls.rotation.z = (90 * Math.PI)/180;
-				house_small_1_walls.scale.set(0.7,0.7,0.7);
-				scene.add(house_small_1_walls);
-				obstacles.push(house_small_1_walls);
-				house_small_1_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
-				house_small_1_roof.position.x = 50;
-				house_small_1_roof.position.y = 26;
-				house_small_1_roof.position.z = -70;
-				house_small_1_roof.rotation.x = (90 * Math.PI)/180;
-				house_small_1_roof.rotation.y = (180 * Math.PI)/180;
-				house_small_1_roof.rotation.z = (90 * Math.PI)/180;
-				house_small_1_roof.scale.set(0.7,0.7,0.7);
-				scene.add(house_small_1_roof);
-				house_small_1_door = new THREE.Mesh(house_door_geometry, house_door_material);
-				house_small_1_door.position.x = 32;
-				house_small_1_door.position.y = 10;
-				house_small_1_door.position.z = -55;
-				house_small_1_door.rotation.y = (270 * Math.PI)/180;
-				house_small_1_door.scale.set(0.7,0.7,0.7);
-				scene.add(house_small_1_door);
-
-				// ADDING THE SECOND HOUSE
-				house_small_2_walls = new THREE.Mesh(house_small_walls_geometry, house_small_walls_material);
-				house_small_2_walls.position.x = 50;
-				house_small_2_walls.position.y = 11;
-				house_small_2_walls.position.z = 40;
-				house_small_2_walls.rotation.x = (90 * Math.PI)/180;
-				house_small_2_walls.rotation.y = (180 * Math.PI)/180;
-				house_small_2_walls.rotation.z = (90 * Math.PI)/180;
-				house_small_2_walls.scale.set(0.7,0.7,0.7);
-				scene.add(house_small_2_walls);
-				obstacles.push(house_small_2_walls);
-				house_small_2_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
-				house_small_2_roof.position.x = 50;
-				house_small_2_roof.position.y = 26;
-				house_small_2_roof.position.z = 40;
-				house_small_2_roof.rotation.x = (90 * Math.PI)/180;
-				house_small_2_roof.rotation.y = (180 * Math.PI)/180;
-				house_small_2_roof.rotation.z = (90 * Math.PI)/180;
-				house_small_2_roof.scale.set(0.7,0.7,0.7);
-				scene.add(house_small_2_roof);
-				house_small_2_door = new THREE.Mesh(house_door_geometry, house_door_material);
-				house_small_2_door.position.x = 32;
-				house_small_2_door.position.y = 10;
-				house_small_2_door.position.z = 55;
-				house_small_2_door.rotation.y = (270 * Math.PI)/180;
-				house_small_2_door.scale.set(0.7,0.7,0.7);
-				scene.add(house_small_2_door);
-
-				// ADDING THE TIRTH HOUSE
-				house_small_3_walls = new THREE.Mesh(house_small_walls_geometry, house_small_walls_material);
-				house_small_3_walls.position.x = -50;
-				house_small_3_walls.position.y = 11;
-				house_small_3_walls.position.z = -70;
-				house_small_3_walls.rotation.x = (90 * Math.PI)/180;
-				house_small_3_walls.rotation.y = (180 * Math.PI)/180;
-				house_small_3_walls.rotation.z = (270 * Math.PI)/180;
-				house_small_3_walls.scale.set(0.7,0.7,0.7);
-				scene.add(house_small_3_walls);
-				obstacles.push(house_small_3_walls);
-				house_small_3_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
-				house_small_3_roof.position.x = -50;
-				house_small_3_roof.position.y = 26;
-				house_small_3_roof.position.z = -70;
-				house_small_3_roof.rotation.x = (90 * Math.PI)/180;
-				house_small_3_roof.rotation.y = (180 * Math.PI)/180;
-				house_small_3_roof.rotation.z = (90 * Math.PI)/180;
-				house_small_3_roof.scale.set(0.7,0.7,0.7);
-				scene.add(house_small_3_roof);
-				house_small_3_door = new THREE.Mesh(house_door_geometry, house_door_material);
-				house_small_3_door.position.x = -32;
-				house_small_3_door.position.y = 10;
-				house_small_3_door.position.z = -85;
-				house_small_3_door.rotation.y = (90 * Math.PI)/180;
-				house_small_3_door.scale.set(0.7,0.7,0.7);
-				scene.add(house_small_3_door);
-
-				// ADDING THE FOURTH HOUSE
-				house_small_4_walls = new THREE.Mesh(house_small_walls_geometry, house_small_walls_material);
-				house_small_4_walls.position.x = -50;
-				house_small_4_walls.position.y = 11;
-				house_small_4_walls.position.z = 40;
-				house_small_4_walls.rotation.x = (90 * Math.PI)/180;
-				house_small_4_walls.rotation.y = (180 * Math.PI)/180;
-				house_small_4_walls.rotation.z = (270 * Math.PI)/180;
-				house_small_4_walls.scale.set(0.7,0.7,0.7);
-				scene.add(house_small_4_walls);
-				obstacles.push(house_small_4_walls);
-				house_small_4_roof = new THREE.Mesh(house_small_roof_geometry, house_small_roof_material);
-				house_small_4_roof.position.x = -50;
-				house_small_4_roof.position.y = 26;
-				house_small_4_roof.position.z = 40;
-				house_small_4_roof.rotation.x = (90 * Math.PI)/180;
-				house_small_4_roof.rotation.y = (180 * Math.PI)/180;
-				house_small_4_roof.rotation.z = (90 * Math.PI)/180;
-				house_small_4_roof.scale.set(0.7,0.7,0.7);
-				scene.add(house_small_4_roof);
-				house_small_4_door = new THREE.Mesh(house_door_geometry, house_door_material);
-				house_small_4_door.position.x = -32;
-				house_small_4_door.position.y = 10;
-				house_small_4_door.position.z = 25;
-				house_small_4_door.rotation.y = (90 * Math.PI)/180;
-				house_small_4_door.scale.set(0.7,0.7,0.7);
-				scene.add(house_small_4_door);
-
-				// ADDING THE BIG HOUSE
-				house_big_1_walls = new THREE.Mesh(house_big_walls_geometry, house_big_walls_material);
-				house_big_1_walls.position.x = 4;
-				house_big_1_walls.position.y = 11;
-				house_big_1_walls.position.z = -200;
-				house_big_1_walls.rotation.x = (90 * Math.PI)/180;
-				house_big_1_walls.rotation.y = (180 * Math.PI)/180;
-				house_big_1_walls.rotation.z = (180 * Math.PI)/180;
-				house_big_1_walls.scale.set(0.7,0.7,0.7);
-				scene.add(house_big_1_walls);
-				obstacles.push(house_big_1_walls);
-				house_big_1_roof = new THREE.Mesh(house_big_roof_geometry, house_big_roof_material);
-				house_big_1_roof.position.x = 4;
-				house_big_1_roof.position.y = 28;
-				house_big_1_roof.position.z = -196;
-				house_big_1_roof.rotation.x = (90 * Math.PI)/180;
-				house_big_1_roof.rotation.y = (180 * Math.PI)/180;
-				house_big_1_roof.rotation.z = (180 * Math.PI)/180;
-				house_big_1_roof.scale.set(0.7,0.7,0.7);
-				scene.add(house_big_1_roof);
-				house_big_1_door = new THREE.Mesh(house_door_geometry, house_door_material);
-				house_big_1_door.position.x = -2;
-				house_big_1_door.position.y = 10;
-				house_big_1_door.position.z = -165;
-				house_big_1_door.rotation.z = (180 * Math.PI)/180;
-				house_big_1_door.scale.set(0.7,0.7,0.7);
-				scene.add(house_big_1_door);
 
 				// ADDING THE ISLAND LIMITS
 				var islandLimit1 = new THREE.Mesh(new THREE.BoxGeometry(5,15,400), new THREE.MeshBasicMaterial({color: 0x00ff00}));
@@ -411,6 +230,19 @@
 				if (DEBUG_MODE==false){islandLimit4.visible = false;}
 				scene.add(islandLimit4);
 				obstacles.push(islandLimit4);
+
+				// LOADING THE MATERIALS
+				new THREE.MTLLoader().load(MTL_FILE, function(materials)
+					{
+					// PRELOADING THE MATERIALS
+					materials.preload();
+
+					// SETTING THE MATERIALS FOR LATER USE
+					town_materials = materials;
+
+					// LOADING ALL THE TOWN MODELS
+					loadModels();
+					});
 				}
 
 			function update()
@@ -432,6 +264,13 @@
 				hero.rotation.x = camera.rotation.x;
 				hero.rotation.y = camera.rotation.y;
 				hero.rotation.z = camera.rotation.z;
+
+				// CHECKING IF THE WATER WELL WAS CREATED
+				if (waterWell!=null)
+					{
+					// MOVING THE WATER WELL
+					waterWell.rotation.y = waterWell.rotation.y + 0.02;
+					}
 
 				// CHECKING IF THE UP KEY IS PRESSED
 				if (keyUpPressed==true)
@@ -513,6 +352,255 @@
 
 				// RENDERING THE SCENE
 				renderer.render(scene, camera);
+				}
+
+			function loadModels()
+				{
+				// LOADING THE ROAD MODEL
+				new THREE.OBJLoader().setMaterials(town_materials).load(OBJ_ROAD, function(object)
+					{
+					object.scale.set(10,10,10);
+					town_road = object;
+					checkAssets();
+					});
+
+				// LOADING THE WELL MODEL
+				new THREE.OBJLoader().setMaterials(town_materials).load(OBJ_WELL, function(object)
+					{
+					object.scale.set(13,13,13);
+					town_well = object;
+					checkAssets();
+					});
+
+				// LOADING THE WATER WELL MODEL
+				new THREE.OBJLoader().setMaterials(town_materials).load(OBJ_WATER_WELL, function(object)
+					{
+					object.scale.set(13,13,13);
+					town_water_well = object;
+					checkAssets();
+					});
+
+				// LOADING THE LAMP MODEL
+				new THREE.OBJLoader().setMaterials(town_materials).load(OBJ_LAMP, function(object)
+					{
+					object.scale.set(13,13,13);
+					town_lamp = object;
+					checkAssets();
+					});
+
+				// LOADING THE DOOR MODEL
+				new THREE.OBJLoader().setMaterials(town_materials).load(OBJ_DOOR, function(object)
+					{
+					object.scale.set(13,13,13);
+					town_door = object;
+					checkAssets();
+					});
+
+				// LOADING THE WALL MODEL
+				new THREE.OBJLoader().setMaterials(town_materials).load(OBJ_WALL, function(object)
+					{
+					object.scale.set(13,26,3);
+					town_wall = object;
+					checkAssets();
+					});
+
+				// LOADING THE WINDOW MODEL
+				new THREE.OBJLoader().setMaterials(town_materials).load(OBJ_WINDOW, function(object)
+					{
+					object.scale.set(3,13,13);
+					town_window = object;
+					checkAssets();
+					});
+				}
+
+			function checkAssets()
+				{
+				// UPDATING THE ASSETS COUNTER
+				assets_counter = assets_counter + 1;
+
+				// CHECKING IF ALL THE ASSETS ARE LOADED
+				if (assets_counter==assets_limit)
+					{
+					// CREATING TOWN
+					createTown();
+					}
+				}
+
+			function createTown()
+				{
+				// CREATING THE WELL
+				createWell(0,-155);
+
+				// CREATING THE WATER WELL
+				createWaterWell(0, -296.5,90);
+
+				// CREATING THE ROAD
+				createRoadBlock(15,   20);
+				createRoadBlock(15,  -60);
+				createRoadBlock(-5, -160);
+				createRoadBlock(-5, -140);
+				createRoadBlock(-5, -120);
+				createRoadBlock(-5, -100);
+				createRoadBlock(-5,  -80);
+				createRoadBlock(-5,  -60);
+				createRoadBlock(-5,  -40);
+				createRoadBlock(-5,  -20);
+				createRoadBlock(-5,    0);
+				createRoadBlock(-5,   20);
+				createRoadBlock(-5,   40);
+				createRoadBlock(-5,   60);
+				createRoadBlock(-5,   80);
+				createRoadBlock(-25,  20);
+				createRoadBlock(-25, -60);
+
+				// CREATING THE HOUSE 1
+				createLamp(-25, 17,0)
+				createDoor(-35, 25, 0);
+				createWall(-31, 20, -90);
+				createWall(-31, 30, -90);
+				createWall(-31, 40, -90);
+				createWall(-31, 45, -90);
+				createWindow(-31, 55, 0);
+				createWall(-31, 75, -90);
+
+				createWall(-36, 82, -180);
+				createWall(-46, 82, -180);
+				createWall(-56, 82, -180);
+				createWall(-66, 82, -180);
+
+				createWall(-36, 12, -180);
+				createWall(-46, 12, -180);
+				createWall(-56, 12, -180);
+				createWall(-66, 12, -180);
+
+				createWall(-71, 20, -90);
+				createWall(-71, 30, -90);
+				createWall(-71, 40, -90);
+				createWall(-71, 45, -90);
+				createWall(-71, 55, -90);
+				createWall(-71, 65, -90);
+				createWall(-71, 75, -90);
+
+				// CREATING THE HOUSE 2
+				createDoor(35, 25, -180);
+				createWall(31, 20, -90);
+				createWall(31, 30, -90);
+				createWall(31, 40, -90);
+				createWall(31, 45, -90);
+				createWindow(31, 65, -180);
+				createWall(31, 75, -90);
+
+				createWall(36, 82, -180);
+				createWall(46, 82, -180);
+				createWall(56, 82, -180);
+				createWall(66, 82, -180);
+
+				createWall(36, 12, -180);
+				createWall(46, 12, -180);
+				createWall(56, 12, -180);
+				createWall(66, 12, -180);
+
+				createWall(71, 20, -90);
+				createWall(71, 30, -90);
+				createWall(71, 40, -90);
+				createWall(71, 45, -90);
+				createWall(71, 55, -90);
+				createWall(71, 65, -90);
+				createWall(71, 75, -90);
+
+				// CREATING THE HOUSE 3
+				createDoor(-35, -55, 0);
+				createWall(-31, -20, -90);
+				createWall(-31, -50, -90);
+				createWindow(-31, -40, 0);
+				createWall(-31, -60, -90);
+				createWall(-31, -65, -90);
+
+				// CREATING THE HOUSE 4
+				createDoor(35, -55, -180);
+				createWall(31, -20, -90);
+				createWall(31, -50, -90);
+				createWindow(31, -25, -180);
+				createWall(31, -60, -90);
+				createWall(31, -65, -90);
+				}
+
+			function createRoadBlock(x,z)
+				{
+				var newObj = town_road.clone();
+				newObj.rotation.y = (90 * Math.PI)/180;
+				newObj.position.x = x;
+				newObj.position.y = 1.7;
+				newObj.position.z = z;
+				scene.add(newObj);
+				}
+
+			function createWell(x,z)
+				{
+				var newObj = town_well.clone();
+				newObj.rotation.y = (45 * Math.PI)/180;
+				newObj.position.x = x;
+				newObj.position.y = 1.7;
+				newObj.position.z = z;
+				obstacles.push(newObj);
+				scene.add(newObj);
+				}
+
+			function createWaterWell(x,z,rotation)
+				{
+				var rotationMatrix = new THREE.Matrix4();
+				rotationMatrix.set(0 ,0 ,1 , 0, -1 ,0 ,0 , 0, 0 ,1 ,0 , 0, 0 ,0 ,0 , -1);
+				waterWell = town_water_well.clone();
+				waterWell.quaternion.setFromRotationMatrix( rotationMatrix );
+				waterWell.rotation.y = (rotation * Math.PI)/180;
+				waterWell.position.x = x;
+				waterWell.position.y = 1;
+				waterWell.position.z = z;
+				obstacles.push(waterWell);
+				scene.add(waterWell);
+				}
+
+			function createLamp(x,z,rotation)
+				{
+				var newObj = town_lamp.clone();
+				newObj.rotation.y = (rotation * Math.PI)/180;
+				newObj.position.x = x;
+				newObj.position.y = 10;
+				newObj.position.z = z;
+				scene.add(newObj);
+				}
+
+			function createDoor(x,z,rotation)
+				{
+				var newObj = town_door.clone();
+				newObj.rotation.y = (rotation * Math.PI)/180;
+				newObj.position.x = x;
+				newObj.position.y = 1;
+				newObj.position.z = z;
+				obstacles.push(newObj);
+				scene.add(newObj);
+				}
+
+			function createWindow(x,z,rotation)
+				{
+				var newObj = town_window.clone();
+				newObj.rotation.y = (rotation * Math.PI)/180;
+				newObj.position.x = x;
+				newObj.position.y = 1;
+				newObj.position.z = z;
+				obstacles.push(newObj);
+				scene.add(newObj);
+				}
+
+			function createWall(x,z,rotation)
+				{
+				var newObj = town_wall.clone();
+				newObj.rotation.y = (rotation * Math.PI)/180;
+				newObj.position.x = x;
+				newObj.position.y = 1;
+				newObj.position.z = z;
+				obstacles.push(newObj);
+				scene.add(newObj);
 				}
 
 			function detectCollisions()
