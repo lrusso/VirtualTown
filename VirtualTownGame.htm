@@ -765,82 +765,86 @@
 					// SHOWING THE VIRTUAL JOYSTICK BUTTON CONTAINER
 					document.getElementsByClassName("virtual-town-joystick-button")[0].style.display = "block";
 
-					// CREATING THE VIRTUAL JOYSTICK
-					var joystick = new JoyStick("virtual-town-joystick");
-
-					// HANDLING THE VIRTUAL JOYSTICK
-					setInterval(function()
+					// WAITING 200 MS FOR THE UI TO BE UPDATED
+					setTimeout(function()
 						{
-						// GETTING THE JOYSTICK DIRECTION
-						var joystickDirection = joystick.GetDir();
+						// CREATING THE VIRTUAL JOYSTICK
+						var joystick = new JoyStick("virtual-town-joystick");
 
-						// CHECKING THE JOYSTICK DIRECTION
-						switch(joystickDirection)
+						// HANDLING THE VIRTUAL JOYSTICK
+						setInterval(function()
 							{
-							case "N":
-							keyUpPressed = true;
-							keyDownPressed = false;
-							keyLeftPressed = false;
-							keyRightPressed = false;
-							break;
+							// GETTING THE JOYSTICK DIRECTION
+							var joystickDirection = joystick.GetDir();
 
-							case "S":
-							keyUpPressed = false;
-							keyDownPressed = true;
-							keyLeftPressed = false;
-							keyRightPressed = false;
-							break;
+							// CHECKING THE JOYSTICK DIRECTION
+							switch(joystickDirection)
+								{
+								case "N":
+								keyUpPressed = true;
+								keyDownPressed = false;
+								keyLeftPressed = false;
+								keyRightPressed = false;
+								break;
 
-							case "W":
-							keyUpPressed = false;
-							keyDownPressed = false;
-							keyLeftPressed = true;
-							keyRightPressed = false;
-							break;
+								case "S":
+								keyUpPressed = false;
+								keyDownPressed = true;
+								keyLeftPressed = false;
+								keyRightPressed = false;
+								break;
 
-							case "E":
-							keyUpPressed = false;
-							keyDownPressed = false;
-							keyLeftPressed = false;
-							keyRightPressed = true;
-							break;
+								case "W":
+								keyUpPressed = false;
+								keyDownPressed = false;
+								keyLeftPressed = true;
+								keyRightPressed = false;
+								break;
 
-							case "NW":
-							keyUpPressed = true;
-							keyDownPressed = false;
-							keyLeftPressed = true;
-							keyRightPressed = false;
-							break;
+								case "E":
+								keyUpPressed = false;
+								keyDownPressed = false;
+								keyLeftPressed = false;
+								keyRightPressed = true;
+								break;
 
-							case "NE":
-							keyUpPressed = true;
-							keyDownPressed = false;
-							keyLeftPressed = false;
-							keyRightPressed = true;
-							break;
+								case "NW":
+								keyUpPressed = true;
+								keyDownPressed = false;
+								keyLeftPressed = true;
+								keyRightPressed = false;
+								break;
 
-							case "SE":
-							keyUpPressed = false;
-							keyDownPressed = true;
-							keyLeftPressed = false;
-							keyRightPressed = true;
-							break;
+								case "NE":
+								keyUpPressed = true;
+								keyDownPressed = false;
+								keyLeftPressed = false;
+								keyRightPressed = true;
+								break;
 
-							case "SW":
-							keyUpPressed = false;
-							keyDownPressed = true;
-							keyLeftPressed = true;
-							keyRightPressed = false;
-							break;
+								case "SE":
+								keyUpPressed = false;
+								keyDownPressed = true;
+								keyLeftPressed = false;
+								keyRightPressed = true;
+								break;
 
-							default:
-							keyUpPressed = false;
-							keyDownPressed = false;
-							keyLeftPressed = false;
-							keyRightPressed = false;
-							break;
-							}
-						}, 25);
+								case "SW":
+								keyUpPressed = false;
+								keyDownPressed = true;
+								keyLeftPressed = true;
+								keyRightPressed = false;
+								break;
+
+								default:
+								keyUpPressed = false;
+								keyDownPressed = false;
+								keyLeftPressed = false;
+								keyRightPressed = false;
+								break;
+								}
+							}, 25);
+						}, 200);
 					}
 
 				// UPDATING THE ABOUT LABEL
