@@ -103,12 +103,13 @@
 			var town_well = null;
 			var town_water_well = null;
 			var town_lamp = null;
+			var town_cart = null;
 			var town_door = null;
 			var town_wall = null;
 			var town_roof = null;
 			var town_window = null;
 
-			var assets_limit = 8;
+			var assets_limit = 9;
 			var assets_counter = 0;
 
 			// CHECKING THE USER LANGUAGE
@@ -390,6 +391,14 @@
 					checkAssets();
 					});
 
+				// LOADING THE CART MODEL
+				new THREE.OBJLoader().setMaterials(town_materials).load(OBJ_CART, function(object)
+					{
+					object.scale.set(13,13,13);
+					town_cart = object;
+					checkAssets();
+					});
+
 				// LOADING THE DOOR MODEL
 				new THREE.OBJLoader().setMaterials(town_materials).load(OBJ_DOOR, function(object)
 					{
@@ -439,7 +448,10 @@
 			function createTown()
 				{
 				// CREATING THE WELL
-				createWell(0,-155);
+				createWell(0, -155);
+
+				// CREATING THE CART
+				createCart(-60, -220, 45);
 
 				// CREATING THE WATER WELL
 				createWaterWell(0, -296.5,90);
@@ -625,6 +637,17 @@
 				{
 				var newObj = town_well.clone();
 				newObj.rotation.y = (45 * Math.PI)/180;
+				newObj.position.x = x;
+				newObj.position.y = 1.7;
+				newObj.position.z = z;
+				obstacles.push(newObj);
+				scene.add(newObj);
+				}
+
+			function createCart(x,z,rotation)
+				{
+				var newObj = town_cart.clone();
+				newObj.rotation.y = (rotation * Math.PI)/180;
 				newObj.position.x = x;
 				newObj.position.y = 1.7;
 				newObj.position.z = z;
